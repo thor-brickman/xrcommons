@@ -28,6 +28,15 @@
   </head>
 
   <body>
+
+      <div id="theater">
+        <video id="video" autoplay style="display: none;"></video>
+        <canvas id="canvasLeft"></canvas>
+        <canvas id="canvasRight"></canvas>
+        <label>
+          <br />Try to play me :)</label>
+        <br />
+      </div>
     
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
@@ -44,6 +53,33 @@
               video.play();
           });
       }
+
+      var canvasLeft = document.getElementById('canvasLeft');
+      var canvasRight = document.getElementById('canvasRight');
+      var ctxLeft = canvasLeft.getContext('2d');
+      var ctxRight = canvasRight.getContext('2d');
+      var video = document.getElementById('video');
+
+      // set canvas size = video size when known
+      video.addEventListener('loadedmetadata', function() {
+        canvasLeft.width = video.videoWidth;
+        canvasLeft.height = video.videoHeight;
+        canvasRight.width = video.videoWidth;
+        canvasRight.height = video.videoHeight;
+      });
+
+console.log("Before Loop...");
+
+      function loop() {
+        let video = document.getElementById('video');
+        ctxLeft.drawImage(video, 0, 0);
+        ctxRight.drawImage(video, 0, 0);
+        setTimeout(loop, 1000 / 30); // drawing at 30fps
+      }
+
+      console.log("After loop...");
+
+      loop();
 
     </script>
 
