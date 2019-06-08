@@ -1,0 +1,438 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>XRCommons</title>
+    <meta name="description" content="XRCommons">
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <script>
+        "use strict";
+
+        var targetObject = undefined;
+        var handlingInput = false;
+        var clickCounter = 0;
+        var clickTime = undefined;
+        var welcomed = false;
+        var hmdready = false;
+        var currentcontrolmode = false;
+
+        // Component to change to a sequential color on click.
+        AFRAME.registerComponent('cursor-listener', {
+            init: function () {
+
+                if( this.el.id === "sphere" ) {
+                    this.el.addEventListener('click', function (evt) {
+                        if ( !welcomed && hmdready ) {
+                            console.log("Fused on",this.id);
+                            let welcomesound = document.getElementById("welcome");
+                            welcomesound.play();
+                            welcomed = true;
+                        }
+                    },true);
+                } else {
+                    this.el.addEventListener('click', function (evt) {
+                        console.log("Clicked on",this.id);
+                    },true);
+                }
+
+                this.el.addEventListener('fusing', function (evt) {
+                    console.log("Fusing on",this.id);
+                },true);
+
+                this.el.addEventListener('mouseenter', function (evt) {
+                    console.log("Cursor on",this.id);
+                },true);
+
+                this.el.addEventListener('mouseleave', function (evt) {
+                    console.log("Cursor off",this.id);
+                },true);
+
+                this.el.addEventListener('raycaster-intersected', function(evt) {
+                    console.log("Intersected", this.id);
+                    targetObject = this.id;
+                    this.setAttribute('material', 'emissiveIntensity', '1');
+                },true);
+
+                this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
+                    console.log("Cleared", this.id);
+                    targetObject = undefined;
+                    this.setAttribute('material', 'emissiveIntensity', '0');
+                },true);
+
+                if( this.el.id === "sphere" ) {
+                    this.el.addEventListener('cardboardbutton', function () {
+                        if ( hmdready && ( this.id === "sphere" ) ) {
+                            let openingsound = document.getElementById("openingaudio");
+                            openingsound.play();
+                            let sphere = document.getElementById("sphere");
+                            sphere.emit('startshrink');
+                            let pictureSphere = document.getElementById("picturesphere");
+                            pictureSphere.emit('startexpand');
+                        }
+                    },true);
+                } else if ( this.el.id === "storage" ) {
+                    this.el.addEventListener('cardboardbutton', function (evt) {
+                        console.log("storagemenuselected");
+                        document.getElementById("controltoken").emit("storagemenuselected");
+                    },true);
+                } else {
+                    this.el.addEventListener('cardboardbutton', function (evt) {
+                        console.log("Cardboard button on",this.id);
+                    },true);
+                }
+            }
+        });
+
+        // Let's also emulate the touch event with a keyboard press
+        document.addEventListener("keydown", event => {
+            if ( event.isComposing || event.keyCode === 229 ) {
+                return;
+            }
+            // Look for a space
+            if ( event.keyCode === 32 ) {
+                handletouchstart();
+            }
+        });
+
+    </script>
+
+    <style>
+        #clicktoplaydialog {
+            display: block;
+            visibility: visible;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            text-align: center;
+            font-size: medium;
+            font-family: 'Montserrat', sans-serif;
+            z-index: 32;
+        }
+
+        #clicktoplaydialogtext {
+            padding: 20px;
+        }
+    </style>
+  </head>
+  <body>
+
+    <!-- Cover to get a click that allows sound and video to play. -->
+    <div id="clicktoplaydialog" >
+        <div id="clicktoplaydialogtext" >
+            <p>Click to start the XRcommons application.</p>
+        </div>
+    </div>
+
+    <a-scene id="mainscene" background="color: black">
+
+        <a-assets>
+            <img id="starfield" src="images/starfield.jpg">
+            <img id="earth" src="images/earth.jpg">
+            <img id="pictureorb" src="images/pictureorb.jpg">
+            <img id="brushedaluminum" src="images/brushedaluminum.jpg">
+            <audio id="welcome">
+                    <source src="audio/welcome.ogg" type="audio/ogg">
+                    <source src="audio/welcome.mp3" type="audio/mpeg">
+            </audio>
+            <audio id="doubleclickprompt">
+                    <source src="audio/doubleclickprompt.ogg" type="audio/ogg">
+                    <source src="audio/doubleclickprompt.mp3" type="audio/mpeg">
+            </audio>
+            <audio id="silenceaudio" preload="auto">
+                <source src="audio/silence.ogg" type="audio/ogg">
+                <source src="audio/silence.mp3" type="audio/mpeg">
+            </audio>
+            <audio id="openingaudio">
+                    <source src="audio/crescendo.mp3" type="audio/mpeg">
+                    <source src="audio/crescendo.ogg" type="audio/ogg">
+            </audio>
+            <audio id="soundtrackaudio" volume="0.5">
+                <source src="audio/music.mp3" type="audio/mpeg">
+                <source src="audio/music.ogg" type="audio/ogg">
+            </audio>
+            <a-asset-item id="adminmodel" src="models/admin/scene.gltf"></a-asset-item>
+            <a-asset-item id="editormodel" src="models/editor/scene.gltf"></a-asset-item>
+            <a-asset-item id="peoplemodel" src="models/people/scene.gltf"></a-asset-item>
+            <a-asset-item id="storagemodel" src="models/storage/scene.gltf"></a-asset-item>
+            <a-asset-item id="environmentmodel" src="models/environment/scene.gltf"></a-asset-item>
+        </a-assets>
+
+        <a-sky src="#starfield"></a-sky>
+
+        <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
+        <a-entity id="directionallight" light="type: directional; color: #FFFFFF; intensity: 0.75" position="-5 10 10"></a-entity>
+
+        <a-sphere id="sphere"
+            data-clickable = "true"
+            rotation = "0 0 0"
+            animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
+            animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 1000; easing: easeInOutQuad;"
+            cursor-listener
+            material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8;"
+            position="0 0 0"
+            radius="1.25"
+            color="#F7F4E9"
+            shadow>
+            <a-sphere id="picturesphere"
+                position="0 0 0"
+                rotation="0 0 0"
+                radius="0.01"
+                side="double"
+                material="src: #pictureorb; transparent: true;"
+                animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
+                animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4800; easing: easeInOutQuad;"
+                animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 600; easing: linear;">
+            </a-sphere>
+        </a-sphere>
+
+        <a-sphere id="controltoken"
+            visible="false"
+            scale="0.2 0.2 0.2"
+            radius="0.01"
+            position="0 0 0"
+            color="#8888888"
+            roughness="0.5"
+            metalness="0.9"
+            spherical-env-map="#starfield"
+            material="emissive: #555; emissiveIntensity: 0;"
+            src="#brushedaluminum"
+            animation__expand="property: radius; startEvents: startexpand; to: 0.9; dur: 500; easing: easeInOutQuad;"
+            animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 500; easing: easeInOutQuad;">
+
+            <a-sound id="backgroundmusic" src="#soundtrackaudio" volume="0.5"></a-sound>
+            <a-gltf-model id="admin"
+                visible="false"
+                cursor-listener
+                src="#adminmodel"
+                scale="0.00015 0.00015 0.00015"
+                rotation="90 0 0"
+                position="0 0 0"
+                animation__revealvisible="property: visible; startEvents: levelonecontrolsreveal; from: false; to: true; dur: 1"
+                animation__revealscale="property: scale; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 0.015 0.015 0.015"
+                animation__revealposition="property: position; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: -1.5 -1.5 0"
+                animation__closevisible="property: visible;; startEvents: levelonecontrolsclose; from: true; to: false; dur: 500"
+                animation__closescale="property: scale; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0.00015 0.00015 0.00015"
+                animation__closeposition="property: position;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0 0 0">
+            </a-gltf-model>
+            <a-gltf-model id="editor"
+                visible="false"
+                cursor-listener
+                src="#editormodel"
+                scale="0.001 0.001 0.001"
+                rotation="0 0 90"
+                position="0 0 0"
+                animation__revealvisible="property: visible; startEvents: levelonecontrolsreveal; from: false; to: true; dur: 1"
+                animation__revealscale="property: scale; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 1.2 1.2 1.2"
+                animation__revealposition="property: position; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: -1.5 1.5 0"
+                animation__closevisible="property: visible;; startEvents: levelonecontrolsclose; from: true; to: false; dur: 500"
+                animation__closescale="property: scale;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0.001 0.001 0.001"
+                animation__closeposition="property: position;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0 0 0">
+            </a-gltf-model>
+            <a-gltf-model id="people"
+                visible="false"
+                cursor-listener
+                src="#peoplemodel"
+                scale="0.001 0.001 0.001"
+                rotation="0 0 0"
+                position="0 0 0"
+                animation__revealvisible="property: visible; startEvents: levelonecontrolsreveal; from: false; to: true; dur: 1"
+                animation__revealscale="property: scale; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 0.14 0.14 0.14"
+                animation__revealposition="property: position; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 5.5 -4.4 0"
+                animation__closevisible="property: visible;; startEvents: levelonecontrolsclose; from: true; to: false; dur: 500"
+                animation__closescale="property: scale;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0.001 0.001 0.001"
+                animation__closeposition="property: position;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0 0 0">
+            </a-gltf-model>
+            <a-gltf-model id="storage"
+                visible="false"
+                cursor-listener
+                src="#storagemodel"
+                scale="0.00002 0.00002 0.00002"
+                rotation="0 0 0"
+                position="0 0 0"
+                animation__revealvisible="property: visible; startEvents: levelonecontrolsreveal; from: false; to: true; dur: 1"
+                animation__revealscale="property: scale; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 0.002 0.002 0.002"
+                animation__revealposition="property: position; startEvents: levelonecontrolsreveal; easing: easeInCubic; dur: 500; to: 1.5 1.5 0"
+                animation__closevisible="property: visible;; startEvents: levelonecontrolsclose; from: true; to: false; dur: 500"
+                animation__closescale="property: scale;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0.00002 0.00002 0.00002"
+                animation__closeposition="property: position;; startEvents: levelonecontrolsclose; easing: easeInCubic; dur: 500; to: 0 0 0">
+                <a-gltf-model id="environment"
+                    visible="false"
+                    cursor-listener
+                    src="#environmentmodel"
+                    scale="0.0001 0.0001 0.0001"
+                    rotation="45 -45 -45"
+                    position="0 0 0"
+                    animation__revealvisible="property: visible; startEvents: storagecontrolsreveal; from: false; to: true; dur: 1"
+                    animation__revealscale="property: scale; startEvents: storagecontrolsreveal; easing: easeInCubic; dur: 500; to: 500 500 500"
+                    animation__revealposition="property: position; startEvents: storagecontrolsreveal; easing: easeInCubic; dur: 500; to: 1300 1300 0"
+                    animation__closevisible="property: visible;; startEvents: storagecontrolsclose; from: true; to: false; dur: 500"
+                    animation__closescale="property: scale; startEvents: storagecontrolsclose; easing: easeInCubic; dur: 500; to: 0.00001 0.00001 0.00001"
+                    animation__closeposition="property: position; startEvents: storagecontrolsclose; easing: easeInCubic; dur: 500; to: 0 0 0">
+                </a-gltf-model>
+            </a-gltf-model>
+
+        </a-sphere>
+
+        <a-entity id="camerarig" position="0 0 -6" wasd-controls>
+
+            <a-entity camera="active: true" look-controls position="0 0 0">
+
+                <a-entity
+                    id="maincursor"
+                    raycaster="far: 20; near: 0; objects: [data-clickable]"
+                    cursor="fuse: true; fuseTimeout: 1000"
+                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
+                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
+                    animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                    position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                    material="color: white; shader: flat; transparent: true; opacity: 0.5;">
+                </a-entity>
+
+                <a-text id="textdisplay" value="" align="center" anchor="center" position="0 -0.6 -2" font="aileronsemibold"></a-text>
+
+            </a-entity>
+
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+
+        document.getElementById("mainscene").renderer.gammaInput = true;
+        document.getElementById("mainscene").renderer.gammaOutput = true;
+
+        // Ok, so we need to watch for the cardboard input on the screen.
+        window.addEventListener('touchstart', function () {
+
+            let doubleclickflag = false;
+            console.log("Ok...we got a touch");
+
+            // Check for double click
+            let d = new Date();
+            let rightNow = d.getTime();
+            if ( clickTime !== undefined ) {
+                if ( rightNow - clickTime > 300 ) {
+                    clickCounter = 0;
+                }
+            }
+            clickTime = rightNow;
+            clickCounter = clickCounter + 1;
+            if ( clickCounter === 2 ) {
+                clickCounter = 0;
+                doubleclickflag = true;
+            }
+
+            if ( ( targetObject !== undefined ) && !doubleclickflag ) {
+                let clickTarget = document.getElementById(targetObject);
+                clickTarget.emit('cardboardbutton');
+            }
+
+            if ( doubleclickflag ) {
+                if ( !hmdready ) {
+                    console.log("hmdready");
+                    hmdready = true;
+                } else if ( currentcontrolmode ) {
+                    closecontroltoken();
+                } else {
+                    opencontroltoken();
+                }
+            }
+
+        }, false);
+
+        // Get a click to let us trigger sounds...
+        document.getElementById("clicktoplaydialog").addEventListener("click", function() {
+            document.getElementById("clicktoplaydialog").style.display = "none";
+            document.getElementById("clicktoplaydialog").style.visibility = "hidden";
+            console.log("Playing silence");
+            let silencesound = document.getElementById("silenceaudio");
+            silencesound.play();
+        }, false);
+
+        // PictureSphere animation listeners
+        document.getElementById("picturesphere").addEventListener( "animationcomplete__expand", function() {
+            this.emit('startshrink');
+        }, false );
+
+        // PictureSphere animation listeners
+        document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
+            document.getElementById("sphere").setAttribute("visible","false");
+            document.getElementById("sphere").classList.remove('clickable');
+            let prompt = document.getElementById("doubleclickprompt");
+            prompt.play();
+        }, false );
+
+        // PictureSphere animation listeners
+        document.getElementById("controltoken").addEventListener( "animationcomplete__expand", function() {
+            console.log("Showing controls");
+            document.getElementById("admin").emit("levelonecontrolsreveal");
+            document.getElementById("admin").setAttribute('data-clickable', 'true');
+            document.getElementById("people").emit("levelonecontrolsreveal");
+            document.getElementById("people").setAttribute('data-clickable', 'true');
+            document.getElementById("storage").emit("levelonecontrolsreveal");
+            document.getElementById("storage").setAttribute('data-clickable', 'true');
+            document.getElementById("editor").emit("levelonecontrolsreveal");
+            document.getElementById("editor").setAttribute('data-clickable', 'true');
+        }, false );
+
+        document.getElementById("controltoken").addEventListener( "storagemenuselected", function() {
+            console.log("Moving from storage menu selection");
+            this.object3D.position.sub(new THREE.Vector3( -0.6, 0.6, 0 ));
+            document.getElementById("environment").emit("storagecontrolsreveal");
+            document.getElementById("environment").setAttribute('visible','true');
+            currentcontrolmode = "Storage";
+        }, false );      
+
+        function opencontroltoken() {
+            let cursorEl = document.getElementById("maincursor");
+            let controlTokenEl = document.getElementById("controltoken");
+            let sceneEl = document.getElementById("mainscene");
+
+            let cursorposition = new THREE.Vector3();
+            let cursorrotation = new THREE.Quaternion();
+            let cursorscale = new THREE.Vector3();
+            cursorEl.object3D.matrixWorld.decompose( cursorposition, cursorrotation, cursorscale );
+
+            currentcontrolmode = "levelone";
+            cursorposition.add(new THREE.Vector3( 0, 0, 0.25 ));
+            controlTokenEl.setAttribute( 'position', cursorposition );
+            controlTokenEl.object3D.quaternion.copy( cursorrotation );
+
+            controlTokenEl.setAttribute("visible","true");
+            controlTokenEl.emit("startexpand");
+
+            var raycaster = sceneEl.querySelector('[cursor]').components.raycaster;
+            raycaster.refreshObjects();
+
+        }
+
+        function closecontroltoken() {
+            let controlTokenEl = document.getElementById("controltoken");
+
+            document.getElementById("admin").emit("levelonecontrolsclose");
+            document.getElementById("people").emit("levelonecontrolsclose");
+            document.getElementById("storage").emit("levelonecontrolsclose");
+            document.getElementById("editor").emit("levelonecontrolsclose");
+
+            if ( currentcontrolmode === "Storage") {
+                document.getElementById("environment").emit("storagecontrolsclose");
+                document.getElementById("environment").setAttribute('visible','false');
+            }
+
+            controlTokenEl.emit("startshrink");
+            controlTokenEl.setAttribute("visible","true");
+
+            currentcontrolmode = false;
+        }
+
+    </script>
+
+  </body>
+</html>

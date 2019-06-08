@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/4.2.0/screenfull.min.js"></script>
+
+    <title></title>
+
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="icon" href="images/favicon.png" />
+
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+
+    <!-- Script should ONLY be in here during debug when quick client iteration is required. -->
+    <script>
+    </script>
+
+  </head>
+
+  <body>
+
+      <div id="theater">
+        <video id="video" autoplay style="display: none;"></video>
+        <canvas id="canvasLeft"></canvas>
+        <canvas id="canvasRight"></canvas>
+        <label>
+          <br />Try to play me :)</label>
+        <br />
+      </div>
+    
+    <script>
+
+      // Grab elements, create settings, etc.
+      var video = document.getElementById('video');
+
+      // Get access to the camera!
+      if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // Not adding `{ audio: true }` since we only want video now
+          navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+              //video.src = window.URL.createObjectURL(stream);
+              video.srcObject = stream;
+              video.play();
+          });
+      }
+
+      var canvasLeft = document.getElementById('canvasLeft');
+      var canvasRight = document.getElementById('canvasRight');
+      var ctxLeft = canvasLeft.getContext('2d');
+      var ctxRight = canvasRight.getContext('2d');
+      var video = document.getElementById('video');
+
+      // set canvas size = video size when known
+      video.addEventListener('loadedmetadata', function() {
+        canvasLeft.width = video.videoWidth;
+        canvasLeft.height = video.videoHeight;
+        canvasRight.width = video.videoWidth;
+        canvasRight.height = video.videoHeight;
+      });
+
+console.log("Before Loop...");
+
+      function loop() {
+        let video = document.getElementById('video');
+        ctxLeft.drawImage(video, 0, 0);
+        ctxRight.drawImage(video, 0, 0);
+        setTimeout(loop, 1000 / 30); // drawing at 30fps
+      }
+
+      console.log("After loop...");
+
+      loop();
+
+    </script>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
