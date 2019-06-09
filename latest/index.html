@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/4.2.0/screenfull.min.js"></script>
 
@@ -23,26 +24,218 @@
 
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
+
+      AFRAME.registerComponent('cursor-listener', {
+        init: function () {
+
+            if( this.el.id === "sphere" ) {
+                this.el.addEventListener('click', function (evt) {
+                    // if ( !welcomed && hmdready ) {
+                    //     console.log("Fused on",this.id);
+                    //     let welcomesound = document.getElementById("welcome");
+                    //     welcomesound.play();
+                    //     welcomed = true;
+                    // }
+                },true);
+            } else {
+                this.el.addEventListener('click', function (evt) {
+                    console.log("Clicked on",this.id);
+                },true);
+            }
+
+            this.el.addEventListener('fusing', function (evt) {
+                console.log("Fusing on",this.id);
+            },true);
+
+            this.el.addEventListener('mouseenter', function (evt) {
+                console.log("Cursor on",this.id);
+            },true);
+
+            this.el.addEventListener('mouseleave', function (evt) {
+                console.log("Cursor off",this.id);
+            },true);
+
+            this.el.addEventListener('raycaster-intersected', function(evt) {
+                console.log("Intersected", this.id);
+                targetObject = this.id;
+                this.setAttribute('material', 'emissiveIntensity', '1');
+            },true);
+
+            this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
+                console.log("Cleared", this.id);
+                targetObject = undefined;
+                this.setAttribute('material', 'emissiveIntensity', '0');
+            },true);
+
+            if( this.el.id === "sphere" ) {
+                this.el.addEventListener('cardboardbutton', function () {
+                    if ( hmdready && ( this.id === "sphere" ) ) {
+                        let openingsound = document.getElementById("openingaudio");
+                        openingsound.play();
+                        let sphere = document.getElementById("sphere");
+                        sphere.emit('startshrink');
+                        let pictureSphere = document.getElementById("picturesphere");
+                        pictureSphere.emit('startexpand');
+                    }
+                },true);
+            } else if ( this.el.id === "storage" ) {
+                this.el.addEventListener('cardboardbutton', function (evt) {
+                    console.log("storagemenuselected");
+                    document.getElementById("controltoken").emit("storagemenuselected");
+                },true);
+            } else {
+                this.el.addEventListener('cardboardbutton', function (evt) {
+                    console.log("Cardboard button on",this.id);
+                },true);
+            }
+        }
+    });
+
+    // Let's also emulate the touch event with a keyboard press
+    document.addEventListener("keydown", event => {
+        if ( event.isComposing || event.keyCode === 229 ) {
+            return;
+        }
+        // Look for a space
+        if ( event.keyCode === 32 ) {
+            handletouchstart();
+        }
+    });
+
     </script>
+
+    <style>
+
+    </style>
 
   </head>
 
   <body>
+
+    <div id="splashScreen">
+      <div id="splashText">
+        Please click/touch the screen to begin.
+      </div>
+    </div>
+
+    <video id="cameraFeed" width="640" height="480" webkit-playsinline playsinline style="display: none"></video>
     
+    <a-scene id="mainScene" background="color: black">
+
+      
+      <a-assets>
+          <img id="starfield" src="images/starfield.jpg">
+          <img id="earth" src="images/earth.jpg">
+          <img id="pictureorb" src="images/pictureorb.jpg">
+          <audio id="welcome">
+                  <source src="audio/welcome.ogg" type="audio/ogg">
+                  <source src="audio/welcome.mp3" type="audio/mpeg">
+          </audio>
+          <audio id="doubleclickprompt">
+                  <source src="audio/doubleclickprompt.ogg" type="audio/ogg">
+                  <source src="audio/doubleclickprompt.mp3" type="audio/mpeg">
+          </audio>
+          <audio id="silenceAudio" preload="auto">
+              <source src="audio/silence.ogg" type="audio/ogg">
+              <source src="audio/silence.mp3" type="audio/mpeg">
+          </audio>
+          <audio id="openingaudio">
+                  <source src="audio/crescendo.mp3" type="audio/mpeg">
+                  <source src="audio/crescendo.ogg" type="audio/ogg">
+          </audio>
+      </a-assets>
+
+      <a-sky src="#starfield"></a-sky>
+
+      <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
+      <a-entity id="directionallight" light="type: directional; color: #FFFFFF; intensity: 0.75" position="-5 10 10"></a-entity>
+
+      <a-sphere id="sphere"
+          data-clickable = "true"
+          rotation = "0 0 0"
+          animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
+          animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 1000; easing: easeInOutQuad;"
+          cursor-listener
+          material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8;"
+          position="0 0 -5"
+          radius="1.25"
+          color="#F7F4E9">
+          <a-sphere id="picturesphere"
+              position="0 0 0"
+              rotation="0 0 0"
+              radius="0.01"
+              side="double"
+              material="src: #pictureorb; transparent: true;"
+              animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
+              animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4800; easing: easeInOutQuad;"
+              animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 600; easing: linear;">
+          </a-sphere>
+      </a-sphere>
+
+      
+      <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
+
+          <a-entity camera="active: true" look-controls position="0 0 0">
+
+              <a-entity
+                  id="maincursor"
+                  raycaster="far: 20; near: 0; objects: [data-clickable]"
+                  cursor="fuse: true; fuseTimeout: 1000"
+                  animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
+                  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
+                  animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: white; shader: flat; transparent: true; opacity: 0.5;"
+                  visible="false">
+              </a-entity>
+
+              <a-video src="#cameraFeed" position="0 0 -1" width="3" height="1.688"></a-video>
+
+          </a-entity>
+
+      </a-entity>
+
+    </a-scene>
+    
+
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
 
-      // Grab elements, create settings, etc.
-      var video = document.getElementById('video');
-
       // Get access to the camera!
-      if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          // Not adding `{ audio: true }` since we only want video now
-          navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-              //video.src = window.URL.createObjectURL(stream);
-              video.srcObject = stream;
-              video.play();
-          });
+
+      let splashScreen = document.getElementById("splashScreen");
+      splashScreen.addEventListener( 'click', function( eventData ) {
+        const silence = document.getElementById('silenceAudio');
+        silence.play();
+        this.style.display = "none";
+      });
+
+      navigator.mediaDevices.enumerateDevices()
+        .then(gotDevices)
+
+      function gotDevices(deviceInfos) {
+        for (var i = 0; i !== deviceInfos.length; ++i) {
+          var deviceInfo = deviceInfos[i];
+          if (deviceInfo.kind === 'videoinput') {
+            console.log(deviceInfo);
+            if (deviceInfo.label.search("back") > -1) {
+              let constraints = {
+                video: {
+                  deviceId: {exact: deviceInfo.deviceId}
+                }
+              };
+              console.log(constraints);
+              let video = document.getElementById('cameraFeed');
+              // Not adding `{ audio: true }` since we only want video now
+              navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+                  //video.src = window.URL.createObjectURL(stream);
+                  video.srcObject = stream;
+                  video.play();
+              });
+            }
+          }
+        }
       }
 
     </script>
