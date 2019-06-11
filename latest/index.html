@@ -25,80 +25,88 @@
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
 
+      "use strict";
+
+      var targetObject = undefined;
+      var handlingInput = false;
+      var clickCounter = 0;
+      var clickTime = undefined;
+      var welcomed = false;
+      var hmdReady = false;
+      var arMode = true;
+
       AFRAME.registerComponent('cursor-listener', {
         init: function () {
 
-            if( this.el.id === "sphere" ) {
-                this.el.addEventListener('click', function (evt) {
-                    // if ( !welcomed && hmdready ) {
-                    //     console.log("Fused on",this.id);
-                    //     let welcomesound = document.getElementById("welcome");
-                    //     welcomesound.play();
-                    //     welcomed = true;
-                    // }
-                },true);
+            if( this.el.id === "introEarth" ) {
+              this.el.addEventListener('click', function (evt) {
+                if ( !welcomed && hmdReady ) {
+                    console.log("Fused on",this.id);
+                    let welcomesound = document.getElementById("welcome");
+                    welcomesound.play();
+                    welcomed = true;
+                }
+              },true);
             } else {
-                this.el.addEventListener('click', function (evt) {
-                    console.log("Clicked on",this.id);
-                },true);
+              this.el.addEventListener('click', function (evt) {
+                if (!arMode) {
+                  console.log("Clicked on",this.id);
+                }
+              },true);
             }
 
             this.el.addEventListener('fusing', function (evt) {
+              if (!arMode) {
                 console.log("Fusing on",this.id);
+              }
             },true);
 
             this.el.addEventListener('mouseenter', function (evt) {
+              if (!arMode) {
                 console.log("Cursor on",this.id);
+              }
             },true);
 
             this.el.addEventListener('mouseleave', function (evt) {
+              if (!arMode) {
                 console.log("Cursor off",this.id);
+              }
             },true);
 
             this.el.addEventListener('raycaster-intersected', function(evt) {
+              if (!arMode) {
                 console.log("Intersected", this.id);
                 targetObject = this.id;
                 this.setAttribute('material', 'emissiveIntensity', '1');
+              }
             },true);
 
             this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
+              if (!arMode) {
                 console.log("Cleared", this.id);
                 targetObject = undefined;
                 this.setAttribute('material', 'emissiveIntensity', '0');
+              }
             },true);
 
-            if( this.el.id === "sphere" ) {
+            if( this.el.id === "introEarth" ) {
                 this.el.addEventListener('cardboardbutton', function () {
-                    if ( hmdready && ( this.id === "sphere" ) ) {
+                    if ( hmdReady && ( this.id === "introEarth" ) && !arMode ) {
                         let openingsound = document.getElementById("openingaudio");
                         openingsound.play();
-                        let sphere = document.getElementById("sphere");
+                        let sphere = document.getElementById("introEarth");
                         sphere.emit('startshrink');
                         let pictureSphere = document.getElementById("picturesphere");
                         pictureSphere.emit('startexpand');
                     }
                 },true);
-            } else if ( this.el.id === "storage" ) {
-                this.el.addEventListener('cardboardbutton', function (evt) {
-                    console.log("storagemenuselected");
-                    document.getElementById("controltoken").emit("storagemenuselected");
-                },true);
             } else {
                 this.el.addEventListener('cardboardbutton', function (evt) {
+                  if (!arMode) {
                     console.log("Cardboard button on",this.id);
+                  }
                 },true);
             }
-        }
-    });
-
-    // Let's also emulate the touch event with a keyboard press
-    document.addEventListener("keydown", event => {
-        if ( event.isComposing || event.keyCode === 229 ) {
-            return;
-        }
-        // Look for a space
-        if ( event.keyCode === 32 ) {
-            handletouchstart();
         }
     });
 
@@ -124,33 +132,33 @@
 
       
       <a-assets>
-          <img id="starfield" src="images/starfield.jpg">
-          <img id="earth" src="images/earth.jpg">
-          <img id="pictureorb" src="images/pictureorb.jpg">
-          <audio id="welcome">
-                  <source src="audio/welcome.ogg" type="audio/ogg">
-                  <source src="audio/welcome.mp3" type="audio/mpeg">
-          </audio>
-          <audio id="doubleclickprompt">
-                  <source src="audio/doubleclickprompt.ogg" type="audio/ogg">
-                  <source src="audio/doubleclickprompt.mp3" type="audio/mpeg">
-          </audio>
-          <audio id="silenceAudio" preload="auto">
-              <source src="audio/silence.ogg" type="audio/ogg">
-              <source src="audio/silence.mp3" type="audio/mpeg">
-          </audio>
-          <audio id="openingaudio">
-                  <source src="audio/crescendo.mp3" type="audio/mpeg">
-                  <source src="audio/crescendo.ogg" type="audio/ogg">
-          </audio>
+        <img id="starfield" src="images/starfield.jpg">
+        <img id="earth" src="images/earth.jpg">
+        <img id="pictureorb" src="images/pictureorb.jpg">
+        <audio id="welcome">
+          <source src="audio/welcome.ogg" type="audio/ogg">
+          <source src="audio/welcome.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="doubleclickprompt">
+          <source src="audio/doubleclickprompt.ogg" type="audio/ogg">
+          <source src="audio/doubleclickprompt.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="silenceAudio" preload="auto">
+          <source src="audio/silence.ogg" type="audio/ogg">
+          <source src="audio/silence.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="openingaudio">
+          <source src="audio/crescendo.mp3" type="audio/mpeg">
+          <source src="audio/crescendo.ogg" type="audio/ogg">
+        </audio>
       </a-assets>
 
       <a-sky src="#starfield"></a-sky>
 
       <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
-      <a-entity id="directionallight" light="type: directional; color: #FFFFFF; intensity: 0.75" position="-5 10 10"></a-entity>
+      <a-entity id="directionallight" light="type: directional; color: #FFFFFF; intensity: 0.75" position="-10 20 20"></a-entity>
 
-      <a-sphere id="sphere"
+      <a-sphere id="introEarth"
           data-clickable = "true"
           rotation = "0 0 0"
           animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
@@ -178,7 +186,7 @@
           <a-entity camera="active: true" look-controls position="0 0 0">
 
               <a-entity
-                  id="maincursor"
+                  id="mainCursor"
                   raycaster="far: 20; near: 0; objects: [data-clickable]"
                   cursor="fuse: true; fuseTimeout: 1000"
                   animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
@@ -190,7 +198,7 @@
                   visible="false">
               </a-entity>
 
-              <a-video src="#cameraFeed" position="0 0 -1" width="3" height="1.688"></a-video>
+              <a-video id="arScreen" src="#cameraFeed" position="0 0 -1.0" width="3.0" height="1.688"></a-video>
 
           </a-entity>
 
@@ -204,39 +212,134 @@
 
       // Get access to the camera!
 
-      let splashScreen = document.getElementById("splashScreen");
-      splashScreen.addEventListener( 'click', function( eventData ) {
-        const silence = document.getElementById('silenceAudio');
-        silence.play();
-        this.style.display = "none";
+      document.querySelector('a-scene').addEventListener('loaded', function () {
+
+        let splashScreen = document.getElementById("splashScreen");
+        splashScreen.addEventListener( 'click', function( eventData ) {
+          const silence = document.getElementById('silenceAudio');
+          silence.play();
+          let constraints = {
+            video: { facingMode: "environment" }
+          };
+          console.log(constraints);
+          let video = document.getElementById('cameraFeed');
+          // Not adding `{ audio: true }` since we only want video now
+          navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+              //video.src = window.URL.createObjectURL(stream);
+              video.srcObject = stream;
+              video.play();
+              arMode = true;
+              splashScreenEL = document.getElementById('splashScreen');
+              splashScreenEL.style.display = "none";
+          });
+        });
+
       });
 
-      navigator.mediaDevices.enumerateDevices()
-        .then(gotDevices)
+      // Ok, so we need to watch for the cardboard input on the screen.
+      function handleTouchStart() {
 
-      function gotDevices(deviceInfos) {
-        for (var i = 0; i !== deviceInfos.length; ++i) {
-          var deviceInfo = deviceInfos[i];
-          if (deviceInfo.kind === 'videoinput') {
-            console.log(deviceInfo);
-            if (deviceInfo.label.search("back") > -1) {
-              let constraints = {
-                video: {
-                  deviceId: {exact: deviceInfo.deviceId}
-                }
-              };
-              console.log(constraints);
-              let video = document.getElementById('cameraFeed');
-              // Not adding `{ audio: true }` since we only want video now
-              navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-                  //video.src = window.URL.createObjectURL(stream);
-                  video.srcObject = stream;
-                  video.play();
-              });
+        let doubleclickflag = false;
+        console.log("Ok...we got a touch");
+
+        // Check for double click
+        let d = new Date();
+        let rightNow = d.getTime();
+        if ( clickTime !== undefined ) {
+            if ( rightNow - clickTime > 300 ) {
+                clickCounter = 0;
+            }
+        }
+        clickTime = rightNow;
+        clickCounter = clickCounter + 1;
+        if ( clickCounter === 2 ) {
+          clickCounter = 0;
+          doubleclickflag = true;
+        }
+
+        if ( ( targetObject !== undefined ) && !doubleclickflag ) {
+          let clickTarget = document.getElementById(targetObject);
+          clickTarget.emit('cardboardbutton');
+        }
+
+        if ( doubleclickflag ) {
+          if ( !hmdReady && arMode ) {
+            console.log("hmdReady");
+            hmdReady = true;
+            let screen = document.getElementById('arScreen');
+            screen.setAttribute("visible","false");
+            let video = document.getElementById('cameraFeed');
+            video.pause();
+            let cursor = document.getElementById('mainCursor');
+            cursor.setAttribute('visible',"true");
+            arMode = false;
+            if ( !welcomed ) {
+                  console.log("Fused on",this.id);
+                  let welcomesound = document.getElementById("welcome");
+                  welcomesound.play();
+                  welcomed = true;
             }
           }
         }
       }
+
+      // Ok, so we need to watch for the cardboard input on the screen.
+      window.addEventListener('touchstart', function () {
+
+          let doubleclickflag = false;
+          console.log("Ok...we got a touch");
+
+          // Check for double click
+          let d = new Date();
+          let rightNow = d.getTime();
+          if ( clickTime !== undefined ) {
+              if ( rightNow - clickTime > 300 ) {
+                  clickCounter = 0;
+              }
+          }
+          clickTime = rightNow;
+          clickCounter = clickCounter + 1;
+          if ( clickCounter === 2 ) {
+            clickCounter = 0;
+            doubleclickflag = true;
+          }
+
+          if ( ( targetObject !== undefined ) && !doubleclickflag ) {
+            let clickTarget = document.getElementById(targetObject);
+            clickTarget.emit('cardboardbutton');
+          }
+
+          if ( doubleclickflag ) {
+            if ( !hmdReady && arMode ) {
+              console.log("hmdReady");
+              hmdReady = true;
+              let screen = document.getElementById('arScreen');
+              screen.setAttribute("visible","false");
+              let video = document.getElementById('cameraFeed');
+              video.pause();
+              let cursor = document.getElementById('mainCursor');
+              cursor.setAttribute('visible',"true");
+              arMode = false;
+              if ( !welcomed ) {
+                    console.log("Fused on",this.id);
+                    let welcomesound = document.getElementById("welcome");
+                    welcomesound.play();
+                    welcomed = true;
+              }
+            }
+          }
+      } , false);
+
+      // Let's also emulate the touch event with a keyboard press
+      document.addEventListener("keydown", event => {
+        if ( event.isComposing || event.keyCode === 229 ) {
+            return;
+        }
+        // Look for a space
+        if ( event.keyCode === 32 ) {
+          handleTouchStart();
+        }
+      });
 
     </script>
 
