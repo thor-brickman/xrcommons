@@ -134,4 +134,30 @@ function sectionTwo() {
     clickPrompt.setAttribute("visible","false");
     let studentinfoaudio = document.getElementById("studentinfoaudio");
     studentinfoaudio.play();
+    setTimeout(studentinfoshowmenu, 3000);
+}
+
+function studentinfoshowmenu() {
+    document.getElementById("studentmenutop").setAttribute("visible","true");
+    setTimeout(studentinfoshowinstitutionmenu, 3000);
+}
+
+function studentinfoshowinstitutionmenu() {
+    document.getElementById("studentinstitutionmenu").setAttribute("visible","true");
+    setTimeout(studentinfoshowprofile, 3000);
+}
+
+function studentinfoshowprofile() {
+    document.getElementById("studentinstitutionprofile").setAttribute("visible","true");
+    setTimeout(studentinfohideshowinstitutionmenu, 3000);
+}
+
+function studentinfohideshowinstitutionmenu() {
+    document.getElementById("studentinstitutionmenu").setAttribute("visible","false");
+    document.getElementById("studentinstitutionprofile").setAttribute("visible","false");
+    setTimeout(studentinfohideshowclassmenu, 3000);
+}
+
+function studentinfohideshowclassmenu() {
+    
 }

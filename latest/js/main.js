@@ -125,6 +125,7 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__s
     console.log("Made it unclickable...");
     document.getElementById("ambientlight").setAttribute("light", "intensity", 0.8);
     document.getElementById("directionallight").setAttribute("light", "intensity", 0.5);
+    document.getElementById("directionallight").setAttribute("position","-10 20 -10")
     console.log("Lowered the ambient light...");
 }, false );
 
