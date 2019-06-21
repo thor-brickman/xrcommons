@@ -18,99 +18,12 @@
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
-    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
-    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
-
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
 
-      "use strict";
-
-      var targetObject = undefined;
-      var handlingInput = false;
-      var clickCounter = 0;
-      var clickTime = undefined;
-      var welcomed = false;
-      var hmdReady = false;
-      var arMode = true;
-
-      AFRAME.registerComponent('cursor-listener', {
-        init: function () {
-
-            if( this.el.id === "introEarth" ) {
-              this.el.addEventListener('click', function (evt) {
-                if ( !welcomed && hmdReady ) {
-                    console.log("Fused on",this.id);
-                    let welcomesound = document.getElementById("welcome");
-                    welcomesound.play();
-                    welcomed = true;
-                }
-              },true);
-            } else {
-              this.el.addEventListener('click', function (evt) {
-                if (!arMode) {
-                  console.log("Clicked on",this.id);
-                }
-              },true);
-            }
-
-            this.el.addEventListener('fusing', function (evt) {
-              if (!arMode) {
-                console.log("Fusing on",this.id);
-              }
-            },true);
-
-            this.el.addEventListener('mouseenter', function (evt) {
-              if (!arMode) {
-                console.log("Cursor on",this.id);
-              }
-            },true);
-
-            this.el.addEventListener('mouseleave', function (evt) {
-              if (!arMode) {
-                console.log("Cursor off",this.id);
-              }
-            },true);
-
-            this.el.addEventListener('raycaster-intersected', function(evt) {
-              if (!arMode) {
-                console.log("Intersected", this.id);
-                targetObject = this.id;
-                this.setAttribute('material', 'emissiveIntensity', '1');
-              }
-            },true);
-
-            this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
-              if (!arMode) {
-                console.log("Cleared", this.id);
-                targetObject = undefined;
-                this.setAttribute('material', 'emissiveIntensity', '0');
-              }
-            },true);
-
-            if( this.el.id === "introEarth" ) {
-                this.el.addEventListener('cardboardbutton', function () {
-                    if ( hmdReady && ( this.id === "introEarth" ) && !arMode ) {
-                        let openingsound = document.getElementById("openingaudio");
-                        openingsound.play();
-                        let sphere = document.getElementById("introEarth");
-                        sphere.emit('startshrink');
-                        let pictureSphere = document.getElementById("picturesphere");
-                        pictureSphere.emit('startexpand');
-                    }
-                },true);
-            } else {
-                this.el.addEventListener('cardboardbutton', function (evt) {
-                  if (!arMode) {
-                    console.log("Cardboard button on",this.id);
-                  }
-                },true);
-            }
-        }
-    });
-
     </script>
+
+    <script src="js/preload.js"></script>
 
     <style>
 
@@ -135,13 +48,12 @@
         <img id="starfield" src="images/starfield.jpg">
         <img id="earth" src="images/earth.jpg">
         <img id="pictureorb" src="images/pictureorb.jpg">
+        <img id="woodfloorcolor" src="models/WoodFloor/WoodFloor006COLOR.jpg">
+        <img id="woodfloornormal" src="models/WoodFloor/WoodFloor006NORM.jpg">
+
         <audio id="welcome">
           <source src="audio/welcome.ogg" type="audio/ogg">
           <source src="audio/welcome.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="doubleclickprompt">
-          <source src="audio/doubleclickprompt.ogg" type="audio/ogg">
-          <source src="audio/doubleclickprompt.mp3" type="audio/mpeg">
         </audio>
         <audio id="silenceAudio" preload="auto">
           <source src="audio/silence.ogg" type="audio/ogg">
@@ -151,18 +63,47 @@
           <source src="audio/crescendo.mp3" type="audio/mpeg">
           <source src="audio/crescendo.ogg" type="audio/ogg">
         </audio>
+        <audio id="classroomintroaudio" preload="auto">
+          <source src="audio/classroomintrofinal.ogg" type="audio/ogg">
+          <source src="audio/classroomintrofinal.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="studentinfoaudio" preload="auto">
+          <source src="audio/studentinfo.ogg" type="audio/ogg">
+          <source src="audio/studentinfo.mp3" type="audio/mpeg">
+        </audio>
+
+        <a-asset-item id="chair" src="models/chair/scene.gltf"></a-asset-item>
+        <a-asset-item id="desk" src="models/desk/scene.gltf"></a-asset-item>
+        <a-asset-item id="ganeshmodel" src="models/ganesh/scene.gltf"></a-asset-item>
+        <a-asset-item id="kamodel" src="models/ka/scene.gltf"></a-asset-item>
+        <a-asset-item id="standingwomanmodel" src="models/standingwoman/scene.gltf"></a-asset-item>
+
+        <a-asset-item id="student1model" src="models/student1.glb"></a-asset-item>
+        <a-asset-item id="student2model" src="models/student2.glb"></a-asset-item>
       </a-assets>
 
       <a-sky src="#starfield"></a-sky>
 
-      <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
-      <a-entity id="directionallight" light="type: directional; color: #FFFFFF; intensity: 0.75" position="-10 20 20"></a-entity>
+      <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 0.75"></a-entity>
+      <a-entity id="directionallight"
+        light="type: directional;
+          color: #FFFFFF;
+          intensity: 0.5;
+          castShadow: true;
+          shadowCameraBottom: -26;
+          shadowCameraTop: -4;
+          shadowCameraLeft: -20;
+          shadowCameraRight: 14;
+          shadowMapHeight: 1024;
+          shadowMapWidth: 2014;"
+        position="-10 20 -20">
+      </a-entity>
 
       <a-sphere id="introEarth"
           data-clickable = "true"
           rotation = "0 0 0"
           animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
-          animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 1000; easing: easeInOutQuad;"
+          animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
           cursor-listener
           material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8;"
           position="0 0 -5"
@@ -173,13 +114,224 @@
               rotation="0 0 0"
               radius="0.01"
               side="double"
-              material="src: #pictureorb; transparent: true;"
+              material="src: #pictureorb;"
               animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
-              animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4800; easing: easeInOutQuad;"
-              animation__shrink="property: radius; startEvents: startshrink; to: 0.01; dur: 600; easing: linear;">
+              animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
+              animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
           </a-sphere>
       </a-sphere>
 
+      <a-entity id="classroom"
+        visible="false"
+        position="0 -40 0"
+        animation__slideIn="property: position; startEvents: slidein; easing: easeInCubic; dur: 1000; from: 0 -40 0; to: 0 0 0">
+
+        <a-gltf-model id="chair1"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="0 -5.813 -17.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair2"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="4.849 -5.813 -17.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair3"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="9.914 -5.813 -17.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair4"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="-4.849 -5.813 -17.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair5"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="-9.914 -5.813 -17.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair6"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="8 -5.813 -22.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair7"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="2.937 -5.813 -22.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair8"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="-3.227 -5.813 -22.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="chair9"
+          visible="true"
+          src="#chair"
+          scale="1.971 1.971 1.971"
+          rotation="0 90 0"
+          position="-7.5 -5.813 -22.458"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+
+        <a-gltf-model id="desk1"
+          visible="true"
+          src="#desk"
+          scale="0.05 0.05 0.05"
+          rotation="0 0 0"
+          position="-4.165 -6.013 -3.359"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+        
+        <a-gltf-model id="ganesh"
+          visible="true"
+          src="#ganeshmodel"
+          scale="0.617 0.617 0.617"
+          rotation="0 90 0"
+          position="-15.786 -3.709 -12.488"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+        <a-entity id="ganeshspot"
+          position="-9.846 3.168 -9.985"
+          rotation="-61.266 84.461 -162.49"
+          light="type: spot;
+            color: #FFFFFF;
+            intensity: 0.42;
+            angle: 26.570;
+            castShadow: true;
+            penumbra: 0.2">
+        </a-entity>
+
+                
+        <a-gltf-model id="ka"
+          visible="true"
+          src="#kamodel"
+          scale="5.056 5.056 5.056"
+          rotation="0 90 0"
+          position="13.431 -2.667 -10.991"
+          shadow="cast: true"
+          >
+        </a-gltf-model>
+        <a-entity id="kaspot"
+          position="10.364 3.168 -10.947"
+          light="type: spot;
+            color: #FFFFFF;
+            intensity: 0.42;
+            angle: 26.570;
+            castShadow: true;
+            target: #ka;
+            penumbra: 0.2">
+        </a-entity>
+
+        <a-gltf-model id="standingwoman"
+          visible="true"
+          src="#standingwomanmodel"
+          scale="0.012 0.012 0.012"
+          rotation="0 90 0"
+          position="0 -7.861 -23.815"
+          shadow="cast: true">
+        </a-gltf-model>
+        <a-entity id="standingwomanspot"
+          position="0 3.558 -20.506"
+          rotation="-61.266 0 -162.49"
+          light="type: spot;
+            color: #FFFFFF;
+            intensity: 0.42;
+            angle: 26.570;
+            castShadow: true;
+            penumbra: 0.2">
+        </a-entity>
+
+        <a-plane id="woodfloor"
+          visible="true"
+          src="#woodfloorcolor"
+          repeat="5 5"
+          rotation="-90 0 0"
+          position="0 -7.808 -10"
+          height="30"
+          width="30"
+          normal-map="#woodfloornormal"
+          normal-texture-repeat="5 5"
+          shadow="receive: true">
+        </a-plane>
+
+      </a-entity>
+
+      <a-gltf-model id="student1"
+        visible="false"
+        src="#student1model"
+        scale="0.045 0.045 0.045"
+        rotation="0 0 0"
+        position="0 -7.939 -17.86"
+        animation-mixer="loop: repeat;"
+        shadow="cast: true"
+        >
+      </a-gltf-model>
+
+      <a-gltf-model id="student2"
+        visible="false"
+        src="#student2model"
+        scale="0.045 0.045 0.045"
+        rotation="0 0 0"
+        position="9.923 -7.667 -17.771"
+        animation-mixer="loop: repeat;"
+        shadow="cast: true"
+        >
+      </a-gltf-model>
+
+      <a-entity id="studentmenutop"
+        visible="true"
+        position="1.815 -1.670 -17.459"
+        scale="1 1 1"
+        geometry="primitive: plane;
+          height: 3;
+          width: 1"
+        material="src: images/studentmenu.png">
+      </a-entity>
       
       <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
 
@@ -199,6 +351,17 @@
               </a-entity>
 
               <a-video id="arScreen" src="#cameraFeed" position="0 0 -1.0" width="3.0" height="1.688"></a-video>
+              <a-text
+                id="clickPrompt"
+                visible="false"
+                value="Please click to continue."
+                position="-0.5 -0.5 -1.0"
+                width="2"
+                height="2"
+                font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+                animation="property: color; easing: linear; loop: true; dur: 2000; from: #FFFFFF; to: #000000"
+                color="white">
+              </a-text>
 
           </a-entity>
 
@@ -209,138 +372,6 @@
 
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
-
-      // Get access to the camera!
-
-      document.querySelector('a-scene').addEventListener('loaded', function () {
-
-        let splashScreen = document.getElementById("splashScreen");
-        splashScreen.addEventListener( 'click', function( eventData ) {
-          const silence = document.getElementById('silenceAudio');
-          silence.play();
-          let constraints = {
-            video: { facingMode: "environment" }
-          };
-          console.log(constraints);
-          let video = document.getElementById('cameraFeed');
-          // Not adding `{ audio: true }` since we only want video now
-          navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-              //video.src = window.URL.createObjectURL(stream);
-              video.srcObject = stream;
-              video.play();
-              arMode = true;
-              splashScreenEL = document.getElementById('splashScreen');
-              splashScreenEL.style.display = "none";
-          });
-        });
-
-      });
-
-      // Ok, so we need to watch for the cardboard input on the screen.
-      function handleTouchStart() {
-
-        let doubleclickflag = false;
-        console.log("Ok...we got a touch");
-
-        // Check for double click
-        let d = new Date();
-        let rightNow = d.getTime();
-        if ( clickTime !== undefined ) {
-            if ( rightNow - clickTime > 300 ) {
-                clickCounter = 0;
-            }
-        }
-        clickTime = rightNow;
-        clickCounter = clickCounter + 1;
-        if ( clickCounter === 2 ) {
-          clickCounter = 0;
-          doubleclickflag = true;
-        }
-
-        if ( ( targetObject !== undefined ) && !doubleclickflag ) {
-          let clickTarget = document.getElementById(targetObject);
-          clickTarget.emit('cardboardbutton');
-        }
-
-        if ( doubleclickflag ) {
-          if ( !hmdReady && arMode ) {
-            console.log("hmdReady");
-            hmdReady = true;
-            let screen = document.getElementById('arScreen');
-            screen.setAttribute("visible","false");
-            let video = document.getElementById('cameraFeed');
-            video.pause();
-            let cursor = document.getElementById('mainCursor');
-            cursor.setAttribute('visible',"true");
-            arMode = false;
-            if ( !welcomed ) {
-                  console.log("Fused on",this.id);
-                  let welcomesound = document.getElementById("welcome");
-                  welcomesound.play();
-                  welcomed = true;
-            }
-          }
-        }
-      }
-
-      // Ok, so we need to watch for the cardboard input on the screen.
-      window.addEventListener('touchstart', function () {
-
-          let doubleclickflag = false;
-          console.log("Ok...we got a touch");
-
-          // Check for double click
-          let d = new Date();
-          let rightNow = d.getTime();
-          if ( clickTime !== undefined ) {
-              if ( rightNow - clickTime > 300 ) {
-                  clickCounter = 0;
-              }
-          }
-          clickTime = rightNow;
-          clickCounter = clickCounter + 1;
-          if ( clickCounter === 2 ) {
-            clickCounter = 0;
-            doubleclickflag = true;
-          }
-
-          if ( ( targetObject !== undefined ) && !doubleclickflag ) {
-            let clickTarget = document.getElementById(targetObject);
-            clickTarget.emit('cardboardbutton');
-          }
-
-          if ( doubleclickflag ) {
-            if ( !hmdReady && arMode ) {
-              console.log("hmdReady");
-              hmdReady = true;
-              let screen = document.getElementById('arScreen');
-              screen.setAttribute("visible","false");
-              let video = document.getElementById('cameraFeed');
-              video.pause();
-              let cursor = document.getElementById('mainCursor');
-              cursor.setAttribute('visible',"true");
-              arMode = false;
-              if ( !welcomed ) {
-                    console.log("Fused on",this.id);
-                    let welcomesound = document.getElementById("welcome");
-                    welcomesound.play();
-                    welcomed = true;
-              }
-            }
-          }
-      } , false);
-
-      // Let's also emulate the touch event with a keyboard press
-      document.addEventListener("keydown", event => {
-        if ( event.isComposing || event.keyCode === 229 ) {
-            return;
-        }
-        // Look for a space
-        if ( event.keyCode === 32 ) {
-          handleTouchStart();
-        }
-      });
-
     </script>
 
     <script src="js/main.js"></script>
