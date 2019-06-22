@@ -111,9 +111,9 @@ document.getElementById("classroomintroaudio").addEventListener( "ended", functi
 });
 
 document.getElementById("studentinfoaudio").addEventListener( "ended", function() {
-    // currentMode = "waiting";
-    // document.getElementById("clickPrompt").setAttribute("visible","true");
-    // nextAction = 2;
+    currentMode = "waiting";
+    document.getElementById("clickPrompt").setAttribute("visible","true");
+    nextAction = 2;
 });
 
 // PictureSphere animation listeners

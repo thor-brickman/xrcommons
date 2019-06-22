@@ -11,7 +11,8 @@ var osBrowserInfo = "none";
 var nextAction = 0;
 var sectionScripts = [
     sectionOne,
-    sectionTwo
+    sectionTwo,
+    sectionThree
 ]
 
 // We need ammo to handle browser and OS idiosyncracies...sheesh...
@@ -137,6 +138,10 @@ function sectionTwo() {
     setTimeout(studentinfoshowmenu, 3000);
 }
 
+function sectionThree() {
+
+}
+
 function studentinfoshowmenu() {
     document.getElementById("studentmenutop").setAttribute("visible","true");
     setTimeout(studentinfoshowinstitutionmenu, 3000);
@@ -149,15 +154,37 @@ function studentinfoshowinstitutionmenu() {
 
 function studentinfoshowprofile() {
     document.getElementById("studentinstitutionprofile").setAttribute("visible","true");
-    setTimeout(studentinfohideshowinstitutionmenu, 3000);
+    setTimeout(studentinfohideinstitutionmenu, 3000);
 }
 
-function studentinfohideshowinstitutionmenu() {
+function studentinfohideinstitutionmenu() {
     document.getElementById("studentinstitutionmenu").setAttribute("visible","false");
     document.getElementById("studentinstitutionprofile").setAttribute("visible","false");
-    setTimeout(studentinfohideshowclassmenu, 3000);
+    setTimeout(studentinfoshowclassmenu, 3000);
 }
 
-function studentinfohideshowclassmenu() {
-    
+function studentinfoshowclassmenu() {
+    document.getElementById("studentclassmenu").setAttribute("visible","true");
+    setTimeout(studentinfoshowattendanceprofile, 3000);
+}
+
+function studentinfoshowattendanceprofile() {
+    document.getElementById("studentclassattendance").setAttribute("visible","true");
+    setTimeout(studentinfohideattendanceprofile, 3000);
+}
+
+function studentinfohideattendanceprofile() {
+    document.getElementById("studentclassattendance").setAttribute("visible","false");
+    setTimeout(studentinfoshowengagementprofile, 3000);
+}
+
+function studentinfoshowengagementprofile() {
+    document.getElementById("studentclassengagement").setAttribute("visible","true");
+    setTimeout(studentinfohideclassmenu, 3000);
+}
+
+function studentinfohideclassmenu() {
+    document.getElementById("studentmenutop").setAttribute("visible","false");
+    document.getElementById("studentclassmenu").setAttribute("visible","false");
+    document.getElementById("studentclassengagement").setAttribute("visible","false");
 }
