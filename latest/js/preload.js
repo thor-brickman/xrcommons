@@ -69,35 +69,34 @@ AFRAME.registerComponent('cursor-listener', {
 
         this.el.addEventListener('fusing', function (evt) {
             if (currentMode !== "AR") {
-            console.log("Fusing on",this.id);
+                targetObject = this.id;
+                console.log("Fusing on",this.id);
             }
         },true);
 
         this.el.addEventListener('mouseenter', function (evt) {
             if (currentMode !== "AR") {
-            console.log("Cursor on",this.id);
+                console.log("Cursor on",this.id);
             }
         },true);
 
         this.el.addEventListener('mouseleave', function (evt) {
             if (currentMode !== "AR") {
-            console.log("Cursor off",this.id);
+                console.log("Cursor off",this.id);
             }
         },true);
 
         this.el.addEventListener('raycaster-intersected', function(evt) {
             if (currentMode !== "AR") {
-            console.log("Intersected", this.id);
-            targetObject = this.id;
-            this.setAttribute('material', 'emissiveIntensity', '1');
+                console.log("Intersected", this.id);
+                targetObject = this.id;
             }
         },true);
 
         this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
             if (currentMode !== "AR") {
-            console.log("Cleared", this.id);
-            targetObject = undefined;
-            this.setAttribute('material', 'emissiveIntensity', '0');
+                console.log("Cleared", this.id);
+                targetObject = undefined;
             }
         },true);
 
@@ -139,7 +138,11 @@ function sectionTwo() {
 }
 
 function sectionThree() {
-
+    let clickPrompt = document.getElementById("clickPrompt");
+    clickPrompt.setAttribute("visible","false");
+    let experienceintroaudio = document.getElementById("experienceintroaudio");
+    experienceintroaudio.play();
+    moveToExperience();
 }
 
 function studentinfoshowmenu() {
@@ -187,4 +190,8 @@ function studentinfohideclassmenu() {
     document.getElementById("studentmenutop").setAttribute("visible","false");
     document.getElementById("studentclassmenu").setAttribute("visible","false");
     document.getElementById("studentclassengagement").setAttribute("visible","false");
+}
+
+function moveToExperience() {
+    document.getElementById("classroom").emit('startslideout');
 }

@@ -71,6 +71,10 @@
           <source src="audio/studentinfo.ogg" type="audio/ogg">
           <source src="audio/studentinfo.mp3" type="audio/mpeg">
         </audio>
+        <audio id="experienceintroaudio" preload="auto">
+          <source src="audio/experienceintro.ogg" type="audio/ogg">
+          <source src="audio/experienceintro.mp3" type="audio/mpeg">
+        </audio>
 
         <a-asset-item id="chair" src="models/chair/scene.gltf"></a-asset-item>
         <a-asset-item id="desk" src="models/desk/scene.gltf"></a-asset-item>
@@ -80,6 +84,12 @@
 
         <a-asset-item id="student1model" src="models/student1.glb"></a-asset-item>
         <a-asset-item id="student2model" src="models/student2.glb"></a-asset-item>
+
+        <a-asset-item id="mesaverdemodel" src="models/mesaverde/scene.gltf"></a-asset-item>
+
+        <a-asset-item id="student1standingmodel" src="models/student1standing.glb"></a-asset-item>
+        <a-asset-item id="student2standingmodel" src="models/student2standing.glb"></a-asset-item>
+
       </a-assets>
 
       <a-sky src="#starfield"></a-sky>
@@ -124,7 +134,8 @@
       <a-entity id="classroom"
         visible="false"
         position="0 -40 0"
-        animation__slideIn="property: position; startEvents: slidein; easing: easeInCubic; dur: 1000; from: 0 -40 0; to: 0 0 0">
+        animation__slidein="property: position; startEvents: startslidein; easing: easeInCubic; dur: 1000; from: 0 -40 0; to: 0 0 0"
+        animation__slideout="property: position; startEvents: startslideout; easing: easeInCubic; dur: 1000; from: 0 0 0; to: 0 -40 0">
 
         <a-gltf-model id="chair1"
           visible="true"
@@ -382,6 +393,59 @@
           width: 6"
           material="src: images/XRCommonsAssetsEngagement.png">
       </a-entity>
+
+      <a-gltf-model id="mesaverde"
+        visible="false"
+        src="#mesaverdemodel"
+        scale="10.796 10.796 10.796"
+        rotation="-180 -10.141 -180"
+        position="-100 -30.364 -45.470"
+        shadow="receive: true"
+        animation__slideIn="property: position; startEvents: startslidein; easing: easeInCubic; dur: 1000; from: -100 -30.364 -45.470; to: 7.452 -30.364 -45.470"
+        >
+      </a-gltf-model>
+      
+      <a-gltf-model id="student1standing"
+        visible="false"
+        src="#student1standingmodel"
+        scale="0.045 0.045 0.045"
+        rotation="0 46,543 0"
+        position="-10.641 -10.595 -24.865"
+        animation-mixer="loop: repeat;"
+        shadow="cast: true"
+        >
+      </a-gltf-model>
+
+      <a-plane
+        id="student1shadow"
+        transparent="true"
+        opacity="1"
+        src="images/student1shadow.png"
+        position="-11.040 -10.027 -25.303"
+        rotation="-90 36.004 0"
+        scale="4.832 3.875 1">
+      </a-plane>
+
+      <a-gltf-model id="student2standing"
+        visible="false"
+        src="#student2standingmodel"
+        scale="0.045 0.045 0.045"
+        rotation="0 -44.874 0"
+        position="18.606 -14.512 -34.398"
+        animation-mixer="loop: repeat;"
+        shadow="cast: true"
+        >
+      </a-gltf-model>
+
+      <a-plane
+        id="student2shadow"
+        transparent="true"
+        opacity="0.80"
+        src="images/student2shadow.png"
+        position="17,453 -14.432 -35.105"
+        rotation="-90 47.293 0"
+        scale="13.188 5.490 1.00">
+      </a-plane>
       
       <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
 
