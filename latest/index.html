@@ -134,8 +134,8 @@
       <a-entity id="classroom"
         visible="false"
         position="0 -40 0"
-        animation__slidein="property: position; startEvents: startslidein; easing: easeInCubic; dur: 1000; from: 0 -40 0; to: 0 0 0"
-        animation__slideout="property: position; startEvents: startslideout; easing: easeInCubic; dur: 1000; from: 0 0 0; to: 0 -40 0">
+        animation__slidein="property: position; startEvents: startslidein; easing: easeInOutCubic; dur: 1000; from: 0 -40 0; to: 0 0 0"
+        animation__slideout="property: position; startEvents: startslideout; easing: easeInOutCubic; dur: 1000; from: 0 0 0; to: 0 -40 0">
 
         <a-gltf-model id="chair1"
           visible="true"
@@ -287,6 +287,7 @@
           shadow="cast: true">
         </a-gltf-model>
         <a-entity id="standingwomanspot"
+          visible="false"
           position="0 3.558 -20.506"
           rotation="-61.266 0 -162.49"
           light="type: spot;
@@ -336,28 +337,39 @@
 
       <a-entity id="studentmenutop"
         visible="false"
-        position="1.815 -1.670 -17.459"
+        position="0.095 -2.936 -17.459"
         scale="1 1 1"
-        geometry="primitive: plane;
-          height: 3;
-          width: 1"
-        material="src: images/studentmenu.png">
+        color="white"
+        geometry="primitive: ring;
+          radius-inner: 2;
+          radius-outer: 3;
+          arc: 90;
+          theta-length: 90;
+          theta-start: 0;"
+        material="src: images/studentmenu.png;
+          repeat: 2 2;">
       </a-entity>
 
       <a-entity id="studentinstitutionmenu"
         visible="false"
-        position="3.080 -0.555 -17.459"
+        position="0.195 -2.896 -17.459"
+        rotation="-2.195 4.232 34.551"
         scale="1 1 1"
-        geometry="primitive: plane;
-          height: 3;
-          width: 1"
-        material="src: images/institutionmenu.png">
+        color="white"
+        geometry="primitive: ring;
+          radius-inner: 3;
+          radius-outer: 4;
+          arc: 90;
+          theta-length: 90;
+          theta-start: 0;"
+        material="src: images/institutionmenu.png;
+          repeat: 2 2;">
       </a-entity>
 
       <a-entity id="studentinstitutionprofile"
         visible="false"
-        position="6.932 2.028 -17.459"
-        scale="1 1 1"
+        position="0 0 -9.0"
+        scale="2 2 1"
         geometry="primitive: plane;
           height: 6;
           width: 6"
@@ -366,18 +378,25 @@
 
       <a-entity id="studentclassmenu"
         visible="false"
-        position="3.080 -0.555 -17.459"
-        scale="1 1 1"
-        geometry="primitive: plane;
-          height: 3;
-          width: 1"
-        material="src: images/classmenu.png">
+        position="0.195 -2.896 -17.459"
+        rotation="0 0.260 0.933"
+        scale="1.05 1.05 1.05"
+        color="white"
+        geometry="primitive: ring;
+          radius-inner: 3;
+          radius-outer: 4;
+          arc: 90;
+          theta-length: 90;
+          theta-start: 0;"
+        material="src: images/classmenu.png;
+          repeat: 2 2;">
       </a-entity>
 
       <a-entity id="studentclassattendance"
         visible="false"
-        position="6.932 2.028 -17.459"
-        scale="1 1 1"
+        position="0 0 -9.0"
+        scale="2 2 1"
+        color="white"
         geometry="primitive: plane;
           height: 6;
           width: 6"
@@ -386,8 +405,9 @@
 
       <a-entity id="studentclassengagement"
         visible="false"
-        position="6.932 2.028 -17.459"
-        scale="1 1 1"
+        position="0 0 -9.0"
+        scale="2 2 1"
+        color="white"
         geometry="primitive: plane;
           height: 6;
           width: 6"
@@ -401,7 +421,7 @@
         rotation="-180 -10.141 -180"
         position="-100 -30.364 -45.470"
         shadow="receive: true"
-        animation__slideIn="property: position; startEvents: startslidein; easing: easeInCubic; dur: 1000; from: -100 -30.364 -45.470; to: 7.452 -30.364 -45.470"
+        animation__slideIn="property: position; startEvents: startslidein; easing: easeInOutCubic; dur: 1000; from: -100 -30.364 -45.470; to: 7.452 -30.364 -45.470"
         >
       </a-gltf-model>
       

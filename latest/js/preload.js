@@ -1,51 +1,15 @@
 "use strict";
 
-var targetObject = undefined;
-var handlingInput = false;
-var clickCounter = 0;
-var clickTime = undefined;
-var welcomed = false;
-var hmdReady = false;
-var currentMode = "AR";
-var osBrowserInfo = "none";
-var nextAction = 0;
-var sectionScripts = [
-    sectionOne,
-    sectionTwo,
-    sectionThree
-]
-
-// We need ammo to handle browser and OS idiosyncracies...sheesh...
-function getPlatformUserAgentInfo() {
-    let userAgent = window.navigator.userAgent;
-    let platform = window.navigator.platform;
-    let os = null;
-    let browser = null;
-
-    console.log("userAgent: ", userAgent);
-    console.log("platform: ", platform);
-
-    if (/Mac/.test(platform)) {
-        os = 'Mac';
-    } else if (/Win/.test(platform)) {
-        os = 'Windows';
-    } else if (/Android/.test(userAgent)) {
-        os = 'Android';
-    }
-    
-    if (/CriOS/.test(userAgent)) {
-        browser = 'Chrome';
-    } else if (/iPhone/.test(userAgent)) {
-        browser = 'Safari';
-    } else if (/Chrome/.test(userAgent)) {
-        browser = 'Chrome';
-    }
-
-    return os + '-' + browser;
-
-}
-osBrowserInfo = getPlatformUserAgentInfo();
-console.log(osBrowserInfo);
+// Various and sundry global variables...
+let targetObject = undefined;
+let handlingInput = false;
+let clickCounter = 0;
+let clickTime = undefined;
+let welcomed = false;
+let hmdReady = false;
+let currentMode = "AR";
+let osBrowserInfo = "none";
+let nextAction = 0;
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -121,77 +85,3 @@ AFRAME.registerComponent('cursor-listener', {
         }
     }
 });
-
-function sectionOne() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let classroomintroaudio = document.getElementById("classroomintroaudio");
-    classroomintroaudio.play();
-}
-
-function sectionTwo() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let studentinfoaudio = document.getElementById("studentinfoaudio");
-    studentinfoaudio.play();
-    setTimeout(studentinfoshowmenu, 3000);
-}
-
-function sectionThree() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let experienceintroaudio = document.getElementById("experienceintroaudio");
-    experienceintroaudio.play();
-    moveToExperience();
-}
-
-function studentinfoshowmenu() {
-    document.getElementById("studentmenutop").setAttribute("visible","true");
-    setTimeout(studentinfoshowinstitutionmenu, 3000);
-}
-
-function studentinfoshowinstitutionmenu() {
-    document.getElementById("studentinstitutionmenu").setAttribute("visible","true");
-    setTimeout(studentinfoshowprofile, 3000);
-}
-
-function studentinfoshowprofile() {
-    document.getElementById("studentinstitutionprofile").setAttribute("visible","true");
-    setTimeout(studentinfohideinstitutionmenu, 3000);
-}
-
-function studentinfohideinstitutionmenu() {
-    document.getElementById("studentinstitutionmenu").setAttribute("visible","false");
-    document.getElementById("studentinstitutionprofile").setAttribute("visible","false");
-    setTimeout(studentinfoshowclassmenu, 3000);
-}
-
-function studentinfoshowclassmenu() {
-    document.getElementById("studentclassmenu").setAttribute("visible","true");
-    setTimeout(studentinfoshowattendanceprofile, 3000);
-}
-
-function studentinfoshowattendanceprofile() {
-    document.getElementById("studentclassattendance").setAttribute("visible","true");
-    setTimeout(studentinfohideattendanceprofile, 3000);
-}
-
-function studentinfohideattendanceprofile() {
-    document.getElementById("studentclassattendance").setAttribute("visible","false");
-    setTimeout(studentinfoshowengagementprofile, 3000);
-}
-
-function studentinfoshowengagementprofile() {
-    document.getElementById("studentclassengagement").setAttribute("visible","true");
-    setTimeout(studentinfohideclassmenu, 3000);
-}
-
-function studentinfohideclassmenu() {
-    document.getElementById("studentmenutop").setAttribute("visible","false");
-    document.getElementById("studentclassmenu").setAttribute("visible","false");
-    document.getElementById("studentclassengagement").setAttribute("visible","false");
-}
-
-function moveToExperience() {
-    document.getElementById("classroom").emit('startslideout');
-}
