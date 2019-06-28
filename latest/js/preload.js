@@ -10,6 +10,7 @@ let hmdReady = false;
 let currentMode = "AR";
 let osBrowserInfo = "none";
 let nextAction = 0;
+let activityLog = {};
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -17,16 +18,20 @@ AFRAME.registerComponent('cursor-listener', {
         if( this.el.id === "introEarth" ) {
             this.el.addEventListener('click', function (evt) {
             if ( !welcomed && hmdReady ) {
-                console.log("Fused on",this.id);
+                recordRaycaster("Fused on",this.id);
                 let welcomesound = document.getElementById("welcome");
                 welcomesound.play();
                 welcomed = true;
+            } else {
+                recordRaycaster("Fused",this.id);
+                targetObject = this.id;
             }
             },true);
         } else {
             this.el.addEventListener('click', function (evt) {
             if (currentMode !== "AR") {
-                console.log("Clicked on",this.id);
+                recordRaycaster( "Clicked", this.id );
+                targetObject = this.id;
             }
             },true);
         }
@@ -34,32 +39,34 @@ AFRAME.registerComponent('cursor-listener', {
         this.el.addEventListener('fusing', function (evt) {
             if (currentMode !== "AR") {
                 targetObject = this.id;
-                console.log("Fusing on",this.id);
+                recordRaycaster("Fusing",this.id);
             }
         },true);
 
         this.el.addEventListener('mouseenter', function (evt) {
             if (currentMode !== "AR") {
-                console.log("Cursor on",this.id);
+                recordRaycaster("MouseEnter",this.id);
+                targetObject = this.id;
             }
         },true);
 
         this.el.addEventListener('mouseleave', function (evt) {
             if (currentMode !== "AR") {
-                console.log("Cursor off",this.id);
+                recordRaycaster("MouseLeave",this.id);
+                targetObject = undefined;
             }
         },true);
 
         this.el.addEventListener('raycaster-intersected', function(evt) {
             if (currentMode !== "AR") {
-                console.log("Intersected", this.id);
+                recordRaycaster("RaycasterIntersected",this.id);
                 targetObject = this.id;
             }
         },true);
 
         this.el.addEventListener('raycaster-intersected-cleared', function(evt) {
             if (currentMode !== "AR") {
-                console.log("Cleared", this.id);
+                recordRaycaster("RaycasterCleared",this.id);
                 targetObject = undefined;
             }
         },true);
@@ -79,7 +86,8 @@ AFRAME.registerComponent('cursor-listener', {
         } else {
             this.el.addEventListener('cardboardbutton', function (evt) {
                 if ( currentMode !== "AR" ) {
-                console.log("Cardboard button on",this.id);
+                    recordRaycaster("Touched",this.id);
+                    targetObject = this.id;
                 }
             },true);
         }

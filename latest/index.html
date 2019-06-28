@@ -10,20 +10,22 @@
 
     <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
 
-    <title>XRCommons</title>
+    <title>TCXR</title>
 
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" href="images/favicon.png" />
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
+    <script src="js/activitylog.js"></script>
+    <script src="js/preload.js"></script>
+
     <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
     <script>
 
     </script>
-
-    <script src="js/preload.js"></script>
 
     <style>
 
@@ -239,6 +241,7 @@
         
         <a-gltf-model id="ganesh"
           visible="true"
+          cursor-listener
           src="#ganeshmodel"
           scale="0.617 0.617 0.617"
           rotation="0 90 0"
@@ -260,6 +263,7 @@
                 
         <a-gltf-model id="ka"
           visible="true"
+          cursor-listener
           src="#kamodel"
           scale="5.056 5.056 5.056"
           rotation="0 90 0"
@@ -280,6 +284,7 @@
 
         <a-gltf-model id="standingwoman"
           visible="true"
+          cursor-listener
           src="#standingwomanmodel"
           scale="0.012 0.012 0.012"
           rotation="0 90 0"
@@ -315,6 +320,7 @@
 
       <a-gltf-model id="student1"
         visible="false"
+        cursor-listener
         src="#student1model"
         scale="0.045 0.045 0.045"
         rotation="0 0 0"
@@ -326,6 +332,7 @@
 
       <a-gltf-model id="student2"
         visible="false"
+        cursor-listener
         src="#student2model"
         scale="0.045 0.045 0.045"
         rotation="0 0 0"
@@ -337,6 +344,7 @@
 
       <a-entity id="studentmenutop"
         visible="false"
+        cursor-listener
         position="0.095 -2.936 -17.459"
         scale="1 1 1"
         color="white"
@@ -352,6 +360,7 @@
 
       <a-entity id="studentinstitutionmenu"
         visible="false"
+        cursor-listener
         position="0.195 -2.896 -17.459"
         rotation="-2.195 4.232 34.551"
         scale="1 1 1"
@@ -368,6 +377,7 @@
 
       <a-entity id="studentinstitutionprofile"
         visible="false"
+        cursor-listener
         position="0 0 -9.0"
         scale="2 2 1"
         geometry="primitive: plane;
@@ -378,6 +388,7 @@
 
       <a-entity id="studentclassmenu"
         visible="false"
+        cursor-listener
         position="0.195 -2.896 -17.459"
         rotation="0 0.260 0.933"
         scale="1.05 1.05 1.05"
@@ -394,6 +405,7 @@
 
       <a-entity id="studentclassattendance"
         visible="false"
+        cursor-listener
         position="0 0 -9.0"
         scale="2 2 1"
         color="white"
@@ -405,6 +417,7 @@
 
       <a-entity id="studentclassengagement"
         visible="false"
+        cursor-listener
         position="0 0 -9.0"
         scale="2 2 1"
         color="white"
@@ -427,6 +440,7 @@
       
       <a-gltf-model id="student1standing"
         visible="false"
+        cursor-listener
         src="#student1standingmodel"
         scale="0.045 0.045 0.045"
         rotation="0 46,543 0"
@@ -448,6 +462,7 @@
 
       <a-gltf-model id="student2standing"
         visible="false"
+        cursor-listener
         src="#student2standingmodel"
         scale="0.045 0.045 0.045"
         rotation="0 -44.874 0"
@@ -469,11 +484,11 @@
       
       <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
 
-          <a-entity camera="active: true" look-controls position="0 0 0">
+          <a-entity id="camera" camera="active: true" look-controls position="0 0 0">
 
               <a-entity
                   id="mainCursor"
-                  raycaster="far: 20; near: 0; objects: [data-clickable]"
+                  raycaster="far: 30; near: 0; objects: [data-clickable]"
                   cursor="fuse: true; fuseTimeout: 1000"
                   animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
                   animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"

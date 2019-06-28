@@ -1,5 +1,36 @@
 "use strict";
 
+// Grab the current gaze direction 10 times a second.
+function recordHMD() {
+    if( currentMode !== "AR" ) {
+        let d = new Date();
+        let rightNow = d.getTime();
+        let mainCamera = document.getElementById("camera");
+        let HMDposition = mainCamera.getAttribute("position");
+        let HMDrotation = mainCamera.getAttribute("rotation");
+        let logObject = {};
+        logObject.timeStamp = rightNow;
+        logObject.position = HMDposition;
+        logObject.rotation = HMDrotation;
+        activityLog[rightNow] = JSON.stringify(logObject);
+    }
+}
+
+function recordRaycaster( activity, target ) {
+    if( currentMode !== "AR" ) {
+        let d = new Date();
+        let rightNow = d.getTime();
+        let logObject = {};
+        logObject.timeStamp = rightNow;
+        logObject.activity = activity;
+        logObject.target = target;
+        activityLog[rightNow] = JSON.stringify(logObject);
+        console.log(activityLog[rightNow]);
+    }
+}
+
+setInterval(recordHMD, 100);
+
 // More globals that need things from down here...
 let sectionScripts = [
     sectionOne,
@@ -108,7 +139,11 @@ document.getElementById("classroom").addEventListener( "animationcomplete__slide
 
 document.getElementById("classroomintroaudio").addEventListener( "ended", function() {
     document.getElementById("student1").setAttribute("visible","true");
+    document.getElementById("student1").setAttribute("data-clickable","true");
+
     document.getElementById("student2").setAttribute("visible","true");
+    document.getElementById("student2").setAttribute("data-clickable","true");
+
     currentMode = "waiting";
     document.getElementById("clickPrompt").setAttribute("visible","true");
     nextAction = 1;
@@ -126,6 +161,9 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__s
     let introEarth = document.getElementById("introEarth");
     introEarth.parentNode.removeChild(introEarth);
     document.getElementById("classroom").setAttribute("visible", "true");
+    document.getElementById("ganesh").setAttribute("data-clickable","true");
+    document.getElementById("ka").setAttribute("data-clickable","true");
+    document.getElementById("standingwoman").setAttribute("data-clickable","true");
     document.getElementById("ambientlight").setAttribute("light", "intensity", 0.8);
     document.getElementById("directionallight").setAttribute("light", "intensity", 0.5);
     document.getElementById("directionallight").setAttribute("position","-10 20 -10")
@@ -155,12 +193,14 @@ document.getElementById("mesaverde").addEventListener( "animationcomplete__slide
     student1.setAttribute("visible","false");
     student1.parentNode.removeChild(student1);
     student1standing.setAttribute("visible","true");
+    student1standing.setAttribute("data-clickable","true");
 
     let student2standing = document.getElementById("student2standing");
     let student2 = document.getElementById("student2");
     student2.setAttribute("visible","false");
     student2.parentNode.removeChild(student2);
     student2standing.setAttribute("visible","true");
+    student2standing.setAttribute("data-clickable","true");
 
 }, false );
 
@@ -230,49 +270,70 @@ function sectionThree() {
 // Various menu operations...
 function studentinfoshowmenu() {
     document.getElementById("studentmenutop").setAttribute("visible","true");
+    document.getElementById("studentmenutop").setAttribute("data-clickable","true");
+
     setTimeout(studentinfoshowinstitutionmenu, 3000);
 }
 
 function studentinfoshowinstitutionmenu() {
     document.getElementById("studentinstitutionmenu").setAttribute("visible","true");
+    document.getElementById("studentinstitutionmenu").setAttribute("data-clickable","true");
+
     setTimeout(studentinfoshowprofile, 3000);
 }
 
 function studentinfoshowprofile() {
     document.getElementById("studentinstitutionprofile").setAttribute("visible","true");
+    document.getElementById("studentinstitutionprofile").setAttribute("data-clickable","true");
+
     setTimeout(studentinfohideinstitutionmenu, 3000);
 }
 
 function studentinfohideinstitutionmenu() {
     document.getElementById("studentinstitutionmenu").setAttribute("visible","false");
+    document.getElementById("studentinstitutionmenu").removeAttribute("data-clickable");
+
     document.getElementById("studentinstitutionprofile").setAttribute("visible","false");
+    document.getElementById("studentinstitutionprofile").removeAttribute("data-clickable");
+
     setTimeout(studentinfoshowclassmenu, 3000);
 }
 
 function studentinfoshowclassmenu() {
     document.getElementById("studentclassmenu").setAttribute("visible","true");
+    document.getElementById("studentclassmenu").setAttribute("data-clickable","true");
+
     setTimeout(studentinfoshowattendanceprofile, 3000);
 }
 
 function studentinfoshowattendanceprofile() {
     document.getElementById("studentclassattendance").setAttribute("visible","true");
+    document.getElementById("studentclassattendance").setAttribute("data-clickable","true");
+
     setTimeout(studentinfohideattendanceprofile, 3000);
 }
 
 function studentinfohideattendanceprofile() {
     document.getElementById("studentclassattendance").setAttribute("visible","false");
+    document.getElementById("studentclassattendance").removeAttribute("data-clickable");
+
     setTimeout(studentinfoshowengagementprofile, 3000);
 }
 
 function studentinfoshowengagementprofile() {
     document.getElementById("studentclassengagement").setAttribute("visible","true");
+    document.getElementById("studentclassengagement").setAttribute("data-clickable","true");
+
     setTimeout(studentinfohideclassmenu, 3000);
 }
 
 function studentinfohideclassmenu() {
     document.getElementById("studentmenutop").setAttribute("visible","false");
+    document.getElementById("studentmenutop").removeAttribute("data-clickable");
     document.getElementById("studentclassmenu").setAttribute("visible","false");
+    document.getElementById("studentclassmenu").removeAttribute("data-clickable");
     document.getElementById("studentclassengagement").setAttribute("visible","false");
+    document.getElementById("studentclassengagement").removeAttribute("data-clickable");
 }
 
 function moveToExperience() {
