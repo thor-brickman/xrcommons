@@ -11,6 +11,7 @@ let currentMode = "AR";
 let osBrowserInfo = "none";
 let nextAction = 0;
 let activityLog = {};
+let trackingCursor = false;
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {

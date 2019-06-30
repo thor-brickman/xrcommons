@@ -10,9 +10,27 @@ function recordHMD() {
         let HMDrotation = mainCamera.getAttribute("rotation");
         let logObject = {};
         logObject.timeStamp = rightNow;
+        logObject.type = "HMD";
         logObject.position = HMDposition;
         logObject.rotation = HMDrotation;
-        activityLog[rightNow] = JSON.stringify(logObject);
+        activityLog[rightNow] = logObject;
+        if( trackingCursor ) {
+            const sceneEL = document.getElementById("mainScene");
+            const newEntityEL = document.createElement('a-entity');
+
+            newEntityEL.setAttribute('geometry',"primitive: ring; radiusInner: 0.02; radiusOuter: 0.03");
+            newEntityEL.setAttribute('material',"color: #8F8; shader: flat; transparent: true; opacity: 0.5;");
+            let cursorEL = document.getElementById("mainCursor");
+            cursorEL.object3D.getWorldPosition(newEntityEL.object3D.position);
+            cursorEL.object3D.getWorldQuaternion(newEntityEL.object3D.quaternion);
+            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 2000; from: 1 1 1; to: 0 0 0");
+
+            newEntityEL.addEventListener( "animationcomplete__fadeaway", function() {
+                this.parentNode.removeChild(this);
+            }, false );
+
+            sceneEL.appendChild(newEntityEL);
+        }
     }
 }
 
@@ -22,9 +40,10 @@ function recordRaycaster( activity, target ) {
         let rightNow = d.getTime();
         let logObject = {};
         logObject.timeStamp = rightNow;
+        logObject.type = "Int";
         logObject.activity = activity;
         logObject.target = target;
-        activityLog[rightNow] = JSON.stringify(logObject);
+        activityLog[rightNow] = logObject;
         console.log(activityLog[rightNow]);
     }
 }
@@ -35,7 +54,8 @@ setInterval(recordHMD, 100);
 let sectionScripts = [
     sectionOne,
     sectionTwo,
-    sectionThree
+    sectionThree,
+    sectionFour
 ]
 
 // Get access to the camera!
@@ -155,6 +175,12 @@ document.getElementById("studentinfoaudio").addEventListener( "ended", function(
     nextAction = 2;
 });
 
+document.getElementById("experienceintroaudio").addEventListener( "ended", function() {
+    currentMode = "waiting";
+    document.getElementById("clickPrompt").setAttribute("visible","true");
+    nextAction = 3;
+});
+
 // PictureSphere animation listeners
 document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
     console.log("Shrink finished...sliding in classroom...");
@@ -260,6 +286,14 @@ function sectionTwo() {
 }
 
 function sectionThree() {
+    let clickPrompt = document.getElementById("clickPrompt");
+    clickPrompt.setAttribute("visible","false");
+    let experienceintroaudio = document.getElementById("experienceintroaudio");
+    experienceintroaudio.play();
+    moveToExperience();
+}
+
+function sectionFour() {
     let clickPrompt = document.getElementById("clickPrompt");
     clickPrompt.setAttribute("visible","false");
     let experienceintroaudio = document.getElementById("experienceintroaudio");
