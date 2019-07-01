@@ -13,6 +13,8 @@ function recordHMD() {
         logObject.type = "HMD";
         logObject.position = HMDposition;
         logObject.rotation = HMDrotation;
+        gazeX.push(-HMDrotation.y);
+        gazeY.push(HMDrotation.x)
         activityLog[rightNow] = logObject;
         if( trackingCursor ) {
             const sceneEL = document.getElementById("mainScene");
@@ -23,7 +25,7 @@ function recordHMD() {
             let cursorEL = document.getElementById("mainCursor");
             cursorEL.object3D.getWorldPosition(newEntityEL.object3D.position);
             cursorEL.object3D.getWorldQuaternion(newEntityEL.object3D.quaternion);
-            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 2000; from: 1 1 1; to: 0 0 0");
+            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 4000; from: 1 1 1; to: 0 0 0");
 
             newEntityEL.addEventListener( "animationcomplete__fadeaway", function() {
                 this.parentNode.removeChild(this);
@@ -50,12 +52,13 @@ function recordRaycaster( activity, target ) {
 
 setInterval(recordHMD, 100);
 
-// More globals that need things from down here...
+// Array of function targets for the "click to continue" prompts...
 let sectionScripts = [
     sectionOne,
     sectionTwo,
     sectionThree,
-    sectionFour
+    sectionFour,
+    sectionFive
 ]
 
 // Get access to the camera!
@@ -119,12 +122,9 @@ window.addEventListener('touchstart', function () {
         if ( !hmdReady && ( currentMode === "AR" ) ) {
             console.log("hmdReady");
             hmdReady = true;
-            let screen = document.getElementById('arScreen');
-            screen.setAttribute("visible","false");
-            let video = document.getElementById('cameraFeed');
-            video.pause();
-            let cursor = document.getElementById('mainCursor');
-            cursor.setAttribute('visible',"true");
+            document.getElementById('arScreen').setAttribute("visible","false");
+            document.getElementById('cameraFeed').pause();
+            document.getElementById('mainCursor').setAttribute('visible',"true");
             currentMode = "playing";
             if ( !welcomed ) {
                 console.log("Fused on",this.id);
@@ -152,7 +152,6 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__e
 }, false );
 
 document.getElementById("classroom").addEventListener( "animationcomplete__slidein", function() {
-    let classroomintrosound = document.getElementById("classroomintroaudio");
     currentMode = "waiting";
     document.getElementById("clickPrompt").setAttribute("visible","true");
 }, false );
@@ -171,6 +170,7 @@ document.getElementById("classroomintroaudio").addEventListener( "ended", functi
 
 document.getElementById("studentinfoaudio").addEventListener( "ended", function() {
     currentMode = "waiting";
+    studentinfohideclassmenu();
     document.getElementById("clickPrompt").setAttribute("visible","true");
     nextAction = 2;
 });
@@ -179,6 +179,12 @@ document.getElementById("experienceintroaudio").addEventListener( "ended", funct
     currentMode = "waiting";
     document.getElementById("clickPrompt").setAttribute("visible","true");
     nextAction = 3;
+});
+
+document.getElementById("biomechanicalintroaudio").addEventListener( "ended", function() {
+    studentinfohideclassmenu();
+    trackingCursor = false;
+    moveToAnalytics();
 });
 
 // PictureSphere animation listeners
@@ -230,6 +236,44 @@ document.getElementById("mesaverde").addEventListener( "animationcomplete__slide
 
 }, false );
 
+document.getElementById("mesaverde").addEventListener( "animationcomplete__slideout", function() {
+    console.log("mesaverde out, removing students.");
+
+    this.setAttribute("visible","false");
+
+    let student1standing = document.getElementById("student1standing");
+    let student1hilite = document.getElementById("student1hilite");
+    let student1shadow = document.getElementById("student1shadow");
+
+    student1hilite.setAttribute("visible","false");
+    student1hilite.parentNode.removeChild(student1hilite);
+    student1standing.setAttribute("visible","false");
+    student1standing.parentNode.removeChild(student1standing);
+    student1shadow.setAttribute("visible","false");
+    student1shadow.parentNode.removeChild(student1shadow);
+
+    let student2standing = document.getElementById("student2standing");
+    let student2hilite = document.getElementById("student2hilite");
+    let student2shadow = document.getElementById("student2shadow");
+
+    student2hilite.setAttribute("visible","false");
+    student2hilite.parentNode.removeChild(student2hilite);
+    student2standing.setAttribute("visible","false");
+    student2standing.parentNode.removeChild(student2standing);
+    student2shadow.setAttribute("visible","false");
+    student2shadow.parentNode.removeChild(student2shadow);
+
+    document.getElementById("dataDisplay").setAttribute("visible","true");
+    plotEyeMovements();
+
+}, false );
+
+document.getElementById("dataDisplay").addEventListener( "animationcomplete__scaleup", function() {
+    currentMode = "waiting";
+    document.getElementById("clickPrompt").setAttribute("visible","true");
+    nextAction = 4;
+}, false );
+
 // We need ammo to handle browser and OS idiosyncracies...sheesh...
 function getPlatformUserAgentInfo() {
     let userAgent = window.navigator.userAgent;
@@ -271,34 +315,30 @@ if( osBrowserInfo === "Android-Chrome" ) {
 
 // These are called by the click to continue prompt in order to satisfy iPhone security needs...
 function sectionOne() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let classroomintroaudio = document.getElementById("classroomintroaudio");
-    classroomintroaudio.play();
+    document.getElementById("clickPrompt").setAttribute("visible","false");
+    document.getElementById("classroomintroaudio").play();
 }
 
 function sectionTwo() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let studentinfoaudio = document.getElementById("studentinfoaudio");
-    studentinfoaudio.play();
+    document.getElementById("clickPrompt").setAttribute("visible","false");
+    document.getElementById("studentinfoaudio").play();
     setTimeout(studentinfoshowmenu, 3000);
 }
 
 function sectionThree() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let experienceintroaudio = document.getElementById("experienceintroaudio");
-    experienceintroaudio.play();
+    document.getElementById("clickPrompt").setAttribute("visible","false");
+    document.getElementById("experienceintroaudio").play();
     moveToExperience();
 }
 
 function sectionFour() {
-    let clickPrompt = document.getElementById("clickPrompt");
-    clickPrompt.setAttribute("visible","false");
-    let experienceintroaudio = document.getElementById("experienceintroaudio");
-    experienceintroaudio.play();
-    moveToExperience();
+    document.getElementById("clickPrompt").setAttribute("visible","false");
+    document.getElementById("biomechanicalintroaudio").play();
+    trackingCursor = true;
+}
+
+function sectionFive() {
+    document.getElementById("clickPrompt").setAttribute("visible","false");
 }
 
 // Various menu operations...
@@ -312,6 +352,8 @@ function studentinfoshowmenu() {
 function studentinfoshowinstitutionmenu() {
     document.getElementById("studentinstitutionmenu").setAttribute("visible","true");
     document.getElementById("studentinstitutionmenu").setAttribute("data-clickable","true");
+
+    document.getElementById("studentmenutop").setAttribute("material","src","images/studentmenudisabled.png");
 
     setTimeout(studentinfoshowprofile, 3000);
 }
@@ -330,12 +372,16 @@ function studentinfohideinstitutionmenu() {
     document.getElementById("studentinstitutionprofile").setAttribute("visible","false");
     document.getElementById("studentinstitutionprofile").removeAttribute("data-clickable");
 
+    document.getElementById("studentmenutop").setAttribute("material","src","images/studentmenu.png");
+
     setTimeout(studentinfoshowclassmenu, 3000);
 }
 
 function studentinfoshowclassmenu() {
     document.getElementById("studentclassmenu").setAttribute("visible","true");
     document.getElementById("studentclassmenu").setAttribute("data-clickable","true");
+
+    document.getElementById("studentmenutop").setAttribute("material","src","images/studentmenudisabled.png");
 
     setTimeout(studentinfoshowattendanceprofile, 3000);
 }
@@ -351,14 +397,12 @@ function studentinfohideattendanceprofile() {
     document.getElementById("studentclassattendance").setAttribute("visible","false");
     document.getElementById("studentclassattendance").removeAttribute("data-clickable");
 
-    setTimeout(studentinfoshowengagementprofile, 3000);
+    setTimeout(studentinfoshowengagementprofile, 1500);
 }
 
 function studentinfoshowengagementprofile() {
     document.getElementById("studentclassengagement").setAttribute("visible","true");
     document.getElementById("studentclassengagement").setAttribute("data-clickable","true");
-
-    setTimeout(studentinfohideclassmenu, 3000);
 }
 
 function studentinfohideclassmenu() {
@@ -372,4 +416,46 @@ function studentinfohideclassmenu() {
 
 function moveToExperience() {
     document.getElementById("classroom").emit('startslideout');
+}
+
+function moveToAnalytics() {
+    document.getElementById("mesaverde").emit('startslideout');
+}
+
+function plotEyeMovements() {
+    console.log("Plotting Graph");
+
+    let d3 = Plotly.d3;
+    // let img_jpg = d3.select('#jpg-export');
+    let imgjpg = document.getElementById("plotlyimage");
+
+    // Plotting the Graph
+    console.log("Plotting Graph");
+    console.log(imgjpg);
+    let trace = {
+        x:gazeX,
+        y:gazeY,
+        type:'scatter'};
+    let data = [trace];
+    let layout = {title : "Eye movement scatter plot"};
+    Plotly.plot(
+    'plotlydiv',
+    data,
+    layout).then(
+        function(gd)
+        {
+            console.log("Ran the plot...now doing toImage");
+            Plotly.toImage(gd,{height:512,width:512}).then(
+                function(url)
+                {
+                    imgjpg.setAttribute("src", url);
+                    return Plotly.toImage(gd,{format:'jpeg',height:512,width:512});
+                }
+            )
+        });
+    
+    document.getElementById("dataDisplay").setAttribute("src","#plotlyimage");
+    currentMode = "waiting";
+    document.getElementById("clickPrompt").setAttribute("visible","true");
+    nextAction = 4;
 }
