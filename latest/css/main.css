@@ -34,7 +34,14 @@
     transform: translate( -50%, -50% );
 }
 
-#plotly_div {
+#plotlydiv {
+    display: block;
+    position: absolute;
+    top: -100%;
+    left: -100%;
+}
+
+#plotlyimage {
     display: block;
     position: absolute;
     top: -100%;

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>     
+    </head>
+
+    <body>
+        <div id="report"></div>
+        <script>
+            let ua = "<p>User-agent header sent: " + navigator.userAgent + "</p>";
+            let platform = "<p>Platform: " + navigator.platform + "</p>";
+            let display = "";
+            display += "<p>Total width/height: " + screen.width + "*" + screen.height + "</p>";
+            display += "<p>Available width/height: " + screen.availWidth + "*" + screen.availHeight + "</p>";
+            display += "<p>Color depth: " + screen.colorDepth + "</p>";
+            display += "<p>Color resolution: " + screen.pixelDepth + "</p>";
+            document.getElementById("report").innerHTML = ua + platform + display;
+        </script>
+    </body>
+</html>

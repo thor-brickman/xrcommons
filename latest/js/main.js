@@ -13,6 +13,9 @@ function recordHMD() {
         logObject.type = "HMD";
         logObject.position = HMDposition;
         logObject.rotation = HMDrotation;
+        if( targetObject !== undefined ) {
+            logObject.target = targetObject;
+        }
         gazeX.push(-HMDrotation.y);
         gazeY.push(HMDrotation.x)
         activityLog[rightNow] = logObject;
@@ -122,6 +125,7 @@ window.addEventListener('touchstart', function () {
         if ( !hmdReady && ( currentMode === "AR" ) ) {
             console.log("hmdReady");
             hmdReady = true;
+            document.getElementById("scenePivot").center;
             document.getElementById('arScreen').setAttribute("visible","false");
             document.getElementById('cameraFeed').pause();
             document.getElementById('mainCursor').setAttribute('visible',"true");
@@ -263,15 +267,8 @@ document.getElementById("mesaverde").addEventListener( "animationcomplete__slide
     student2shadow.setAttribute("visible","false");
     student2shadow.parentNode.removeChild(student2shadow);
 
-    document.getElementById("dataDisplay").setAttribute("visible","true");
     plotEyeMovements();
 
-}, false );
-
-document.getElementById("dataDisplay").addEventListener( "animationcomplete__scaleup", function() {
-    currentMode = "waiting";
-    document.getElementById("clickPrompt").setAttribute("visible","true");
-    nextAction = 4;
 }, false );
 
 // We need ammo to handle browser and OS idiosyncracies...sheesh...
@@ -306,12 +303,12 @@ function getPlatformUserAgentInfo() {
 osBrowserInfo = getPlatformUserAgentInfo();
 console.log(osBrowserInfo);
 
-if( osBrowserInfo === "Android-Chrome" ) {
-    console.log("Adjusting camera rotation for Chrome on Android");
-    document.getElementById("camerarig").setAttribute("rotation","0 180 0");
-} else {
-    console.log("osBrowserInfo: ", osBrowserInfo)
-}
+// if( osBrowserInfo === "Android-Chrome" ) {
+//     console.log("Adjusting camera rotation for Chrome on Android");
+//     document.getElementById("camerarig").setAttribute("rotation","0 180 0");
+// } else {
+//     console.log("osBrowserInfo: ", osBrowserInfo)
+// }
 
 // These are called by the click to continue prompt in order to satisfy iPhone security needs...
 function sectionOne() {
@@ -426,8 +423,7 @@ function plotEyeMovements() {
     console.log("Plotting Graph");
 
     let d3 = Plotly.d3;
-    // let img_jpg = d3.select('#jpg-export');
-    let imgjpg = document.getElementById("plotlyimage");
+    let imgjpg = d3.select('#dataDisplay');
 
     // Plotting the Graph
     console.log("Plotting Graph");
@@ -438,23 +434,19 @@ function plotEyeMovements() {
         type:'scatter'};
     let data = [trace];
     let layout = {title : "Eye movement scatter plot"};
-    Plotly.plot(
-    'plotlydiv',
-    data,
-    layout).then(
-        function(gd)
-        {
+    Plotly.plot('plotlydiv',data,layout).then(
+        function(gd) {
             console.log("Ran the plot...now doing toImage");
             Plotly.toImage(gd,{height:512,width:512}).then(
-                function(url)
-                {
-                    imgjpg.setAttribute("src", url);
+                function(url) {
+                    imgjpg.attr("src", url);
                     return Plotly.toImage(gd,{format:'jpeg',height:512,width:512});
                 }
             )
-        });
+        }
+    );
     
-    document.getElementById("dataDisplay").setAttribute("src","#plotlyimage");
+    document.getElementById("dataDisplay").setAttribute("visible","true");
     currentMode = "waiting";
     document.getElementById("clickPrompt").setAttribute("visible","true");
     nextAction = 4;
