@@ -15,6 +15,11 @@ function recordHMD() {
         logObject.rotation = HMDrotation;
         if( targetObject !== undefined ) {
             logObject.target = targetObject;
+            if( targetCounts[targetObject.id] !== undefined ) {
+                targetCounts[targetObject.id]++;
+            } else {
+                targetCounts[targetObject.id] = 1;
+            }
         }
         gazeX.push(-HMDrotation.y);
         gazeY.push(HMDrotation.x)
