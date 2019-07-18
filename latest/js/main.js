@@ -33,7 +33,7 @@ function recordHMD() {
             let cursorEL = document.getElementById("mainCursor");
             cursorEL.object3D.getWorldPosition(newEntityEL.object3D.position);
             cursorEL.object3D.getWorldQuaternion(newEntityEL.object3D.quaternion);
-            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 2000; from: 1 1 1; to: 0 0 0");
+            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 4000; from: 1 1 1; to: 0 0 0");
 
             newEntityEL.addEventListener( "animationcomplete__fadeaway", function() {
                 this.parentNode.removeChild(this);
