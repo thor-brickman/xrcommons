@@ -51,8 +51,6 @@
         <img id="starfield" src="images/starfield.jpg">
         <img id="earth" src="images/earth.jpg">
         <img id="pictureorb" src="images/pictureorb.jpg">
-        <img id="woodfloorcolor" src="models/WoodFloor/WoodFloor006COLOR.jpg">
-        <img id="woodfloornormal" src="models/WoodFloor/WoodFloor006NORM.jpg">
         <img id="blankwhite" src="images/blankwhite.png" width="512" height="512">
 
         <audio id="welcome">
@@ -63,471 +61,50 @@
           <source src="audio/silence.ogg" type="audio/ogg">
           <source src="audio/silence.mp3" type="audio/mpeg">
         </audio>
-        <audio id="openingaudio">
-          <source src="audio/crescendo.mp3" type="audio/mpeg">
-          <source src="audio/crescendo.ogg" type="audio/ogg">
-        </audio>
-        <audio id="classroomintroaudio" preload="auto">
-          <source src="audio/classroomintrofinal.ogg" type="audio/ogg">
-          <source src="audio/classroomintrofinal.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="studentinfoaudio" preload="auto">
-          <source src="audio/studentinfo.ogg" type="audio/ogg">
-          <source src="audio/studentinfo.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="experienceintroaudio" preload="auto">
-          <source src="audio/experienceintro.ogg" type="audio/ogg">
-          <source src="audio/experienceintro.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="biomechanicalintroaudio" preload="auto">
-          <source src="audio/biomechanicalintro.ogg" type="audio/ogg">
-          <source src="audio/biomechanicalintro.mp3" type="audio/mpeg">
-        </audio>
-
-        <a-asset-item id="chair" src="models/chair/scene.gltf"></a-asset-item>
-        <a-asset-item id="desk" src="models/desk/scene.gltf"></a-asset-item>
-        <a-asset-item id="ganeshmodel" src="models/ganesh/scene.gltf"></a-asset-item>
-        <a-asset-item id="kamodel" src="models/ka/scene.gltf"></a-asset-item>
-        <a-asset-item id="standingwomanmodel" src="models/standingwoman/scene.gltf"></a-asset-item>
-
-        <a-asset-item id="student1model" src="models/student1.glb"></a-asset-item>
-        <a-asset-item id="student2model" src="models/student2.glb"></a-asset-item>
-
-        <a-asset-item id="mesaverdemodel" src="models/mesaverde/scene.gltf"></a-asset-item>
-
-        <a-asset-item id="student1standingmodel" src="models/student1standing.glb"></a-asset-item>
-        <a-asset-item id="student2standingmodel" src="models/student2standing.glb"></a-asset-item>
-
       </a-assets>
 
-<a-entity id="scenePivot" recenter="target: #introEarth">
+<a-entity id="openingScenePivot" recenter="target: #introEarth">
 
-      <a-sky src="#starfield"></a-sky>
+  <a-sky src="#starfield"></a-sky>
 
-      <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
-      <a-entity id="directionallight"
-        light="type: directional;
-          color: #FFFFFF;
-          intensity: 0.5;
-          castShadow: true;
-          shadowCameraBottom: -26;
-          shadowCameraTop: -4;
-          shadowCameraLeft: -20;
-          shadowCameraRight: 14;
-          shadowMapHeight: 1024;
-          shadowMapWidth: 2014;"
-        position= "-10 20 10">
-      </a-entity>
+  <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
+  <a-entity id="directionallight"
+    light="type: directional;
+      color: #FFFFFF;
+      intensity: 0.5;
+      castShadow: true;
+      shadowCameraBottom: -26;
+      shadowCameraTop: -4;
+      shadowCameraLeft: -20;
+      shadowCameraRight: 14;
+      shadowMapHeight: 1024;
+      shadowMapWidth: 2014;"
+    position= "-10 20 10">
+  </a-entity>
 
-      <a-sphere id="introEarth"
-          data-clickable = "true"
-          rotation = "0 0 0"
-          animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
-          animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
-          cursor-listener
-          material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8; emissive: #FFF; emissiveIntensity: 0.0;"
-          position="0 0 -5"
-          radius="1.25"
-          color="#F7F4E9">
-          <a-sphere id="picturesphere"
-              position="0 0 0"
-              rotation="0 0 0"
-              radius="0.01"
-              side="double"
-              material="src: #pictureorb;"
-              animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
-              animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
-              animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
-          </a-sphere>
-      </a-sphere>
-
-      <a-entity id="classroom"
-        visible="false"
-        position="0 -40 0"
-        animation__slidein="property: position; startEvents: startslidein; easing: easeInOutCubic; dur: 1000; from: 0 -40 0; to: 0 0 0"
-        animation__slideout="property: position; startEvents: startslideout; easing: easeInOutCubic; dur: 1000; from: 0 0 0; to: 0 -40 0">
-
-        <a-gltf-model id="chair1"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="0 -5.813 -17.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair2"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="4.849 -5.813 -17.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair3"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="9.914 -5.813 -17.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair4"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="-4.849 -5.813 -17.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair5"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="-9.914 -5.813 -17.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair6"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="8 -5.813 -22.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair7"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="2.937 -5.813 -22.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair8"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="-3.227 -5.813 -22.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="chair9"
-          visible="true"
-          src="#chair"
-          scale="1.971 1.971 1.971"
-          rotation="0 90 0"
-          position="-7.5 -5.813 -22.458"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-
-        <a-gltf-model id="desk1"
-          visible="true"
-          src="#desk"
-          scale="0.05 0.05 0.05"
+  <a-sphere id="introEarth"
+      data-clickable = "true"
+      rotation = "0 0 0"
+      animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
+      animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
+      cursor-listener
+      material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8; emissive: #FFF; emissiveIntensity: 0.0;"
+      position="0 0 -5"
+      radius="1.25"
+      color="#F7F4E9">
+      <a-sphere id="picturesphere"
+          position="0 0 0"
           rotation="0 0 0"
-          position="-4.165 -6.013 -3.359"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-        
-        <a-gltf-model id="ganesh"
-          visible="true"
-          cursor-listener
-          src="#ganeshmodel"
-          scale="0.617 0.617 0.617"
-          rotation="0 90 0"
-          position="-15.786 -3.709 -12.488"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-        <a-entity id="ganeshspot"
-          position="-9.846 3.168 -9.985"
-          rotation="-61.266 84.461 -162.49"
-          light="type: spot;
-            color: #FFFFFF;
-            intensity: 0.42;
-            angle: 26.570;
-            castShadow: true;
-            penumbra: 0.2">
-        </a-entity>
+          radius="0.01"
+          side="double"
+          material="src: #pictureorb;"
+          animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
+          animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
+          animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
+      </a-sphere>
+  </a-sphere>
 
-                
-        <a-gltf-model id="ka"
-          visible="true"
-          cursor-listener
-          src="#kamodel"
-          scale="5.056 5.056 5.056"
-          rotation="0 90 0"
-          position="13.431 -2.667 -10.991"
-          shadow="cast: true"
-          >
-        </a-gltf-model>
-        <a-entity id="kaspot"
-          position="10.364 3.168 -10.947"
-          light="type: spot;
-            color: #FFFFFF;
-            intensity: 0.42;
-            angle: 26.570;
-            castShadow: true;
-            target: #ka;
-            penumbra: 0.2">
-        </a-entity>
-
-        <a-gltf-model id="standingwoman"
-          visible="true"
-          cursor-listener
-          src="#standingwomanmodel"
-          scale="0.012 0.012 0.012"
-          rotation="0 90 0"
-          position="0 -7.861 -23.815"
-          shadow="cast: true">
-        </a-gltf-model>
-        <a-entity id="standingwomanspot"
-          visible="false"
-          position="0 3.558 -20.506"
-          rotation="-61.266 0 -162.49"
-          light="type: spot;
-            color: #FFFFFF;
-            intensity: 0.42;
-            angle: 26.570;
-            castShadow: true;
-            penumbra: 0.2">
-        </a-entity>
-
-        <a-plane id="woodfloor"
-          visible="true"
-          src="#woodfloorcolor"
-          repeat="5 5"
-          rotation="-90 0 0"
-          position="0 -7.808 -10"
-          height="30"
-          width="30"
-          normal-map="#woodfloornormal"
-          normal-texture-repeat="5 5"
-          shadow="receive: true">
-        </a-plane>
-
-      </a-entity>
-
-      <a-gltf-model id="student1"
-        visible="false"
-        cursor-listener
-        src="#student1model"
-        scale="0.045 0.045 0.045"
-        rotation="0 0 0"
-        position="0 -7.939 -17.86"
-        animation-mixer="loop: repeat;"
-        shadow="cast: true"
-        >
-      </a-gltf-model>
-
-      <a-gltf-model id="student2"
-        visible="false"
-        cursor-listener
-        src="#student2model"
-        scale="0.045 0.045 0.045"
-        rotation="0 0 0"
-        position="9.923 -7.667 -17.771"
-        animation-mixer="loop: repeat;"
-        shadow="cast: true"
-        >
-      </a-gltf-model>
-
-      <a-entity id="studentmenutop"
-        visible="false"
-        cursor-listener
-        position="0.095 -2.936 -17.459"
-        scale="1 1 1"
-        color="#888"
-        geometry="primitive: ring;
-          radius-inner: 2;
-          radius-outer: 3;
-          arc: 90;
-          theta-length: 90;
-          theta-start: 0;"
-        material="src: images/studentmenu.png;
-          repeat: 2 2;">
-      </a-entity>
-
-      <a-entity id="studentinstitutionmenu"
-        visible="false"
-        cursor-listener
-        position="0.195 -2.7 -17.159"
-        rotation="-2.195 4.232 34.551"
-        scale="1 1 1"
-        color="white"
-        geometry="primitive: ring;
-          radius-inner: 2;
-          radius-outer: 3;
-          arc: 90;
-          theta-length: 90;
-          theta-start: 0;"
-        material="src: images/institutionmenu.png;
-          repeat: 2 2;">
-      </a-entity>
-
-      <a-entity id="studentinstitutionprofile"
-        visible="false"
-        cursor-listener
-        position="0 0 -9.0"
-        scale="2 2 1"
-        geometry="primitive: plane;
-          height: 6;
-          width: 6"
-          material="src: images/XRCommonsAssetsProfile.png">
-      </a-entity>
-
-      <a-entity id="studentclassmenu"
-        visible="false"
-        cursor-listener
-        position="0.195 -2.8 -17.259"
-        rotation="0 0.260 0.933"
-        scale="1.05 1.05 1.05"
-        color="white"
-        geometry="primitive: ring;
-          radius-inner: 2;
-          radius-outer: 3;
-          arc: 90;
-          theta-length: 90;
-          theta-start: 0;"
-        material="src: images/classmenu.png;
-          repeat: 2 2;">
-      </a-entity>
-
-      <a-entity id="studentclassattendance"
-        visible="false"
-        cursor-listener
-        position="0 0 -9.0"
-        scale="2 2 1"
-        color="white"
-        geometry="primitive: plane;
-          height: 6;
-          width: 6"
-          material="src: images/XRCommonsAssetsAttendance.png">
-      </a-entity>
-
-      <a-entity id="studentclassengagement"
-        visible="false"
-        cursor-listener
-        position="0 0 -9.0"
-        scale="2 2 1"
-        color="white"
-        geometry="primitive: plane;
-          height: 6;
-          width: 6"
-          material="src: images/XRCommonsAssetsEngagement.png">
-      </a-entity>
-
-      <a-gltf-model id="mesaverde"
-        visible="false"
-        src="#mesaverdemodel"
-        scale="10.796 10.796 10.796"
-        rotation="-180 -10.141 -180"
-        position="-100 -30.364 -45.470"
-        shadow="receive: true"
-        animation__slideIn="property: position; startEvents: startslidein; easing: easeInOutCubic; dur: 1000; from: -100 -30.364 -45.470; to: 7.452 -30.364 -45.470"
-        animation__slideOut="property: position; startEvents: startslideout; easing: easeInOutCubic; dur: 1000; from: 7.452 -30.364 -45.470; to:  -200 -30.364 -45.470"
-        >
-      </a-gltf-model>
-      
-      <a-gltf-model id="student1standing"
-        visible="false"
-        cursor-listener
-        hilite="true"
-        src="#student1standingmodel"
-        scale="0.045 0.045 0.045"
-        rotation="0 46,543 0"
-        position="-10.641 -10.595 -24.865"
-        animation-mixer="loop: repeat;"
-        shadow="cast: true"
-        >
-      </a-gltf-model>
-
-      <a-plane
-        id="student1shadow"
-        transparent="true"
-        opacity="1"
-        src="images/student1shadow.png"
-        position="-11.040 -10.027 -25.303"
-        rotation="-90 36.004 0"
-        scale="4.832 3.875 1">
-      </a-plane>
-
-      <a-cylinder
-        id="student1hilite"
-        visible="false"
-        position="-10.32 -6.645 -25.08"
-        scale="1.3 8.377 1.3"
-        transparent="true"
-        opacity="0.50"
-        src="images/hiliteGradient.png"
-        animation="property: opacity; easing: linear; dur: 1000; loop: true; from: 0; to: 1;">
-      </a-cylinder>
-
-      <a-gltf-model id="student2standing"
-        visible="false"
-        cursor-listener
-        hilite="true"
-        src="#student2standingmodel"
-        scale="0.045 0.045 0.045"
-        rotation="0 -44.874 0"
-        position="18.606 -14.512 -34.398"
-        animation-mixer="loop: repeat;"
-        shadow="cast: true"
-        >
-      </a-gltf-model>
-
-      <a-plane
-        id="student2shadow"
-        transparent="true"
-        opacity="0.80"
-        src="images/student2shadow.png"
-        position="17,453 -14.432 -35.105"
-        rotation="-90 47.293 0"
-        scale="13.188 5.490 1.00">
-      </a-plane>
-
-      <a-cylinder
-        id="student2hilite"
-        visible="false"
-        position="18.512 -10.510 -33.907"
-        scale="1.3 8.377 1.3"
-        transparent="true"
-        opacity="0.50"
-        src="images/hiliteGradient.png"
-        animation="property: opacity; easing: linear; dur: 1000; loop: true; from: 0; to: 1;">
-      </a-cylinder>
-
-      <a-curvedimage id="dataDisplay"
-        visible="false"
-        src="#blankwhite"
-        height="5.0"
-        radius="3"
-        theta-length="120"
-        position="0 0 0"
-        rotation="0 120 0"
-        scale="1 1 1"
-        color="#FFF">
-      </a-curvedimage>
-
-</a-entity>
+</a-entity data-description="Closure for openingScenePivot">
 
       <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
 
