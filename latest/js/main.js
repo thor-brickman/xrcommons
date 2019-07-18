@@ -62,12 +62,8 @@ setInterval(recordHMD, 100);
 
 // Array of function targets for the "click to continue" prompts...
 let sectionScripts = [
-    sectionOne,
-    sectionTwo,
-    sectionThree,
-    sectionFour,
-    sectionFive
-]
+    sectionOne
+];
 
 // Get access to the camera!
 
@@ -130,7 +126,7 @@ window.addEventListener('touchstart', function () {
         if ( !hmdReady && ( currentMode === "AR" ) ) {
             console.log("hmdReady");
             hmdReady = true;
-            document.getElementById("scenePivot").center;
+            document.getElementById("openingScenePivot").center;
             document.getElementById('arScreen').setAttribute("visible","false");
             document.getElementById('cameraFeed').pause();
             document.getElementById('mainCursor').setAttribute('visible',"true");
@@ -157,18 +153,16 @@ document.addEventListener("keydown", event => {
 });
 
 document.getElementById("picturesphere").addEventListener( "animationcomplete__expand", function() {
+    document.getElementById("skySphere").setAttribute("material", "src", "#blankwhite")
     this.emit('startshrink');
 }, false );
 
 // PictureSphere animation listeners
 document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
     console.log("Shrink finished...sliding in classroom...");
-    let introEarth = document.getElementById("introEarth");
-    introEarth.parentNode.removeChild(introEarth);
+    document.getElementById("openingScenePivot").parentNode.removeChild(openingScene);
     document.getElementById("ambientlight").setAttribute("light", "intensity", 0.8);
-    document.getElementById("directionallight").setAttribute("light", "intensity", 0.5);
-    document.getElementById("directionallight").setAttribute("position","-10 20 -10")
-    console.log("Lowered the ambient light...");
+    document.getElementById("portalRoom").setAttribute("visible","true");
 }, false );
 
 // We need ammo to handle browser and OS idiosyncracies...sheesh...

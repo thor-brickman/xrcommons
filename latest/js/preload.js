@@ -91,10 +91,9 @@ AFRAME.registerComponent('cursor-listener', {
         if( this.el.id === "introEarth" ) {
             this.el.addEventListener('cardboardbutton', function () {
                 if ( hmdReady && ( currentMode !== "AR" ) ) {
-                    document.getElementById("openingaudio").play();
                     document.getElementById("introEarth").emit('startshrink');
                     document.getElementById("picturesphere").emit('startexpand');
-                    document.getElementById("classroom").setAttribute("visible","true");
+                    document.getElementById("crescendo").play();
                 }
             },true);
         } else {

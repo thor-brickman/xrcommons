@@ -53,9 +53,13 @@
         <img id="pictureorb" src="images/pictureorb.jpg">
         <img id="blankwhite" src="images/blankwhite.png" width="512" height="512">
 
-        <audio id="welcome">
+        <audio id="welcome" preload="auto">
           <source src="audio/welcome.ogg" type="audio/ogg">
           <source src="audio/welcome.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="crescendo" preload="auto">
+          <source src="audio/crescendo.ogg" type="audio/ogg">
+          <source src="audio/crescendo.mp3" type="audio/mpeg">
         </audio>
         <audio id="silenceAudio" preload="auto">
           <source src="audio/silence.ogg" type="audio/ogg">
@@ -63,48 +67,64 @@
         </audio>
       </a-assets>
 
-<a-entity id="openingScenePivot" recenter="target: #introEarth">
+      <a-sky id="skySphere"
+        src="#starfield">
+      </a-sky>
 
-  <a-sky src="#starfield"></a-sky>
+      <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
 
-  <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 1"></a-entity>
-  <a-entity id="directionallight"
-    light="type: directional;
-      color: #FFFFFF;
-      intensity: 0.5;
-      castShadow: true;
-      shadowCameraBottom: -26;
-      shadowCameraTop: -4;
-      shadowCameraLeft: -20;
-      shadowCameraRight: 14;
-      shadowMapHeight: 1024;
-      shadowMapWidth: 2014;"
-    position= "-10 20 10">
-  </a-entity>
+      <a-entity id="openingScenePivot" recenter="target: #introEarth">
 
-  <a-sphere id="introEarth"
-      data-clickable = "true"
-      rotation = "0 0 0"
-      animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
-      animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
-      cursor-listener
-      material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8; emissive: #FFF; emissiveIntensity: 0.0;"
-      position="0 0 -5"
-      radius="1.25"
-      color="#F7F4E9">
-      <a-sphere id="picturesphere"
+        <a-entity id="directionallight"
+          light="type: directional;
+            color: #FFFFFF;
+            intensity: 0.5;
+            castShadow: true;
+            shadowCameraBottom: -26;
+            shadowCameraTop: -4;
+            shadowCameraLeft: -20;
+            shadowCameraRight: 14;
+            shadowMapHeight: 1024;
+            shadowMapWidth: 2014;"
+          position= "-10 20 10">
+        </a-entity>
+
+        <a-sphere id="introEarth"
+            data-clickable = "true"
+            rotation = "0 0 0"
+            animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
+            animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
+            cursor-listener
+            material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8; emissive: #FFF; emissiveIntensity: 0.0;"
+            position="0 0 -5"
+            radius="1.25"
+            color="#F7F4E9">
+            <a-sphere id="picturesphere"
+                position="0 0 0"
+                rotation="0 0 0"
+                radius="0.01"
+                side="double"
+                material="src: #pictureorb;"
+                animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
+                animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
+                animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
+            </a-sphere>
+        </a-sphere>
+
+      </a-entity data-description="Closure for openingScenePivot">
+
+      <a-entity id="portalRoom"
+        visible="false">
+
+        <a-entity id="floor"
+          geometry="primitive: circle"
+          rotation="-90 0 0"
           position="0 0 0"
-          rotation="0 0 0"
-          radius="0.01"
-          side="double"
-          material="src: #pictureorb;"
-          animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
-          animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
-          animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
-      </a-sphere>
-  </a-sphere>
+          material="color: #000;"
+          scale="10 10 1">
+        </a-entity>
 
-</a-entity data-description="Closure for openingScenePivot">
+      </a-entity data-description="Closure for portalRoom">
 
       <a-entity id="camerarig" position="0 0 0" rotation="0 0 0" wasd-controls>
 
