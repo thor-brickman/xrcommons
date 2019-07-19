@@ -93,7 +93,7 @@
             data-clickable = "true"
             rotation = "0 0 0"
             animation__turning="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 30000;"
-            animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1000; easing: easeInOutQuad;"
+            animation__shrink="property: radius; startEvents: startshrink; to: 0.0001; dur: 1500; easing: linear;"
             cursor-listener
             material="src: #earth; color: #AAAAAA; roughness: 0.7; metalness: 0.8; emissive: #FFF; emissiveIntensity: 0.0;"
             position="0 0 -5"
@@ -107,7 +107,7 @@
                 material="src: #pictureorb;"
                 animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
                 animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
-                animation__shrink="property: radius; startEvents: startshrink; to: 0.001; dur: 1500; easing: easeInOutQuad;">
+                animation__shrink="property: position; startEvents: startshrink; to: 10000 0 0; dur: 1500; easing: linear;">
             </a-sphere>
         </a-sphere>
 
@@ -119,9 +119,62 @@
         <a-entity id="floor"
           geometry="primitive: circle"
           rotation="-90 0 0"
-          position="0 0 0"
-          material="color: #000;"
-          scale="10 10 1">
+          position="0.0 -2 0.0"
+          material="color: #FFF;"
+          scale="13 13 1"
+          shadow="receive: true">
+        </a-entity>
+
+        <a-entity id="DoorOne"
+          gltf-model="models/DoorTest2.gltf"
+          shadow="cast: true"
+          scale="0.25 0.25 0.25"
+          rotation="0 135.0 0"
+          position="-7.586 -2.107 -2.157">
+        </a-entity>
+        <a-entity text="value: ENGAGEMENT; align: center;" position="-7.109 2.378 -1.707" scale="8 8 1" rotation="0 45 0"></a-entity>
+        <a-entity id="WorldSphereOne"
+          geometry="primitive: sphere;
+            thetaLength: 90;"
+          position="0 0 -2.331"
+          rotation="90 180 0"
+          scale="2 2 2"
+          material="color: #888;
+            src: images/room1360.jpg;
+            side: back;
+            repeat: 1 0.5;
+            offset: 0 -0.75;">
+        </a-entity>
+
+        <a-entity id="DoorTwo"
+          gltf-model="models/DoorTest2.gltf"
+          shadow="cast: true"
+          scale="0.25 0.25 0.25"
+          rotation="0 90 0"
+          position="0 -2.107 -6">
+          <a-entity text="value: Persistence;"></a-entity>
+        </a-entity>
+
+        <a-entity id="DoorThree"
+          gltf-model="models/DoorTest2.gltf"
+          shadow="cast: true"
+          scale="0.25 0.25 0.25"
+          rotation="0 45 0"
+          position="7.586 -2.107 -2.157">
+          <a-entity text="value: Retention;"></a-entity>
+        </a-entity>
+
+        <a-entity id="DirectionalLight"
+          light="castShadow: true;
+            type: directional;
+            shadowCameraBottom: -9;
+            shadowCameraLeft: -10;
+            shadowCameraRight: 11;
+            shadowCameraTop: 10;
+            shadowMapHeight: 1024;
+            shadowMapWidth: 1024;"
+          position="0 12 12"
+          intensity="0.5">
         </a-entity>
 
       </a-entity data-description="Closure for portalRoom">

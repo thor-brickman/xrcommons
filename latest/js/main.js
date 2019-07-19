@@ -160,8 +160,9 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__e
 // PictureSphere animation listeners
 document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
     console.log("Shrink finished...sliding in classroom...");
-    document.getElementById("openingScenePivot").parentNode.removeChild(openingScene);
-    document.getElementById("ambientlight").setAttribute("light", "intensity", 0.8);
+    let openingScene = document.getElementById("openingScenePivot");
+    openingScene.parentNode.removeChild(openingScene);
+    document.getElementById("ambientlight").setAttribute("light", "intensity", 0.5);
     document.getElementById("portalRoom").setAttribute("visible","true");
 }, false );
 
