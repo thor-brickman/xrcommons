@@ -133,7 +133,16 @@
           position="-7.586 -2.107 -2.157">
         </a-entity>
         <a-entity text="value: ENGAGEMENT; align: center;" position="-7.109 2.378 -1.707" scale="8 8 1" rotation="0 45 0"></a-entity>
-        <a-entity id="WorldSphereOne"
+
+        <a-entity id="DoorTwo"
+          gltf-model="models/DoorTest2.gltf"
+          shadow="cast: true"
+          scale="0.25 0.25 0.25"
+          rotation="0 90 0"
+          position="0 -2.107 -6">
+          <a-entity text="value: Persistence;"></a-entity>
+        </a-entity>
+        <a-entity id="WorldSphereTwo"
           geometry="primitive: sphere;
             thetaLength: 90;"
           position="0 0 -6.264"
@@ -145,15 +154,15 @@
             repeat: 1 0.5;
             offset: 0 -0.75;">
         </a-entity>
-
-        <a-entity id="DoorTwo"
-          gltf-model="models/DoorTest2.gltf"
-          shadow="cast: true"
-          scale="0.25 0.25 0.25"
-          rotation="0 90 0"
-          position="0 -2.107 -6">
-          <a-entity text="value: Persistence;"></a-entity>
+        <a-entity id="PortalMaskTwo"
+          geometry="primitive: ring;"
+          position="0 0 -2.959"
+          rotation="0 0 0"
+          scale="3.297 3.297 1"
+          material="
+            color: #FFF;">
         </a-entity>
+
 
         <a-entity id="DoorThree"
           gltf-model="models/DoorTest2.gltf"
