@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <title>Portal Test</title>
+
+    <script>
+
+    </script>
+
+  </head>
+
+    <body>
+
+        <a-scene id="mainScene"
+            background="color: white"
+            renderer="antialias: true;
+                alpha: false;">>
+
+            <a-entity id="ambientlight" light="type: ambient; color: #FFFFFF; intensity: 2"></a-entity>
+
+            <a-sphere id="innerSphere"
+                radius="0.99"
+                position="0 0 -2"
+                rotation="-90 0 0"
+                theta-length="90"
+                material="color: #AAA;
+                side: back;
+                transparent: true;
+                src: scene-sphere-outside.jpg;
+                repeat: 1 0.5;
+                offset: 0.5 0;">
+            </a-sphere>
+
+            <a-sphere id="outerSphere"
+                radius="1"
+                position="0 0 -2"
+                rotation="-90 0 0"
+                theta-length="90"
+                material="color: #AAA;
+                side: front;
+                src: color-grid.png;
+                repeat: 1 0.5;
+                offset: 0.5 0;">
+            </a-sphere>
+
+            <a-ring id="portalRing"
+                radius-outer="1.1"
+                radius-inner="0.5"
+                position="0 0 -2"
+                rotation="-0 0 0"
+                material="color: #AAA;
+                    side: front;
+                    src: color-grid.png;
+                    repeat: 1 1;
+                    offset: 0 0;">
+            </a-circle>
+
+            <a-entity
+                id="camera"
+                camera="active: true"
+                wasd-controls
+                look-controls
+                position="0 0 0">
+    
+                <a-entity
+                    id="mainCursor"
+                    raycaster="far: 40; near: 0; objects: [data-clickable]"
+                    cursor="fuse: true; fuseTimeout: 1000"
+                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
+                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
+                    animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                    position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                    material="color: white; shader: flat; transparent: true; opacity: 0.5;"
+                    visible="false">
+                </a-entity>
+
+            </a-entity>
+
+        </a-scene>
+
+
+        <!-- Scripts should ONLY be in here during debug when quick client iteration is required. -->
+        <script>
+            let outerSphere = document.getElementById("outerSphere")
+            outerSphere.object3D.children[0].material.colorWrite = false;
+
+            let portalRing = document.getElementById("portalRing");
+            portalRing.object3D.children[1].material.colorWrite = false;
+
+            // let loader = new THREE.TextureLoader();
+            // let scene = document.getElementById("mainScene").object3D;
+            // let halfSphereGroup = new THREE.Group();
+            // halfSphereGroup.position.y = 1;
+            // scene.add(halfSphereGroup);
+            
+            // let sphereRadius = 1;
+            // let holeRadius = 0.5;
+            // let borderThickness = 0.05;
+            
+            // let halfSphereGeometry = new THREE.SphereGeometry(sphereRadius, 32, 32, Math.PI, Math.PI); // startAngle, sweepAngle
+            
+            // let cloakTexture = loader.load("color-grid.png");
+            // cloakMaterial = new THREE.MeshBasicMaterial({ map: cloakTexture, side: THREE.FrontSide, colorWrite: false }); // change colorWrite: true to see the cloak
+            // let sceneTexture = loader.load("scene-sphere-outside.jpg");
+            // sceneTexture.offset.x = 0.5;
+            // sceneTexture.repeat.set(0.5, 1);
+            
+            // let innerSphere = new THREE.Mesh( halfSphereGeometry, new THREE.MeshBasicMaterial({ map: sceneTexture, side: THREE.BackSide }) );
+            // let outerSphere = new THREE.Mesh( halfSphereGeometry, cloakMaterial );
+            // let holeMesh    = new THREE.Mesh( new THREE.RingGeometry(holeRadius, sphereRadius * 1.01, 32), cloakMaterial );
+            // let borderMesh  = new THREE.Mesh( new THREE.RingGeometry(holeRadius, holeRadius + borderThickness , 32), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide}) );
+            // borderMesh.position.z = 0.001; // avoid depth-fighting artifacts
+            
+            // halfSphereGroup.add( innerSphere );
+            // halfSphereGroup.add( outerSphere );
+            // halfSphereGroup.add( holeMesh );	
+            // halfSphereGroup.add( borderMesh );
+        </script>
+
+    </body>
+</html>
