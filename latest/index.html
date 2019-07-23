@@ -44,7 +44,11 @@
 
     <video id="cameraFeed" width="640" height="480" webkit-playsinline playsinline style="display: none"></video>
     
-    <a-scene id="mainScene" background="color: black">
+    <a-scene id="mainScene"
+      fog
+      background="color: black"
+      renderer="antialias: true;
+        alpha: false;">
 
       
       <a-assets>
@@ -52,6 +56,10 @@
         <img id="earth" src="images/earth.jpg">
         <img id="pictureorb" src="images/pictureorb.jpg">
         <img id="blankwhite" src="images/blankwhite.png" width="512" height="512">
+        <img id="colorgrid" src="images/color-grid.png">
+        <img id="portalonepicture" src="images/portalone360.jpg">
+        <img id="portaltwopicture" src="images/portaltwo360.jpg">
+        <img id="portalthreepicture" src="images/portalthree360.jpg">
 
         <audio id="welcome" preload="auto">
           <source src="audio/welcome.ogg" type="audio/ogg">
@@ -107,7 +115,7 @@
                 material="src: #pictureorb;"
                 animation__rotation="property: rotation; to: 0 360 0; loop: true; easing: linear; dur: 5000;"
                 animation__expand="property: radius; startEvents: startexpand; to: 10; dur: 4000; easing: easeInOutQuad;"
-                animation__shrink="property: position; startEvents: startshrink; to: 10000 0 0; dur: 1500; easing: linear;">
+                animation__shrink="property: position; startEvents: startshrink; to: 10000 0 0; dur: 1500; easing: easeInOutQuad;">
             </a-sphere>
         </a-sphere>
 
@@ -116,65 +124,182 @@
       <a-entity id="portalRoom"
         visible="false">
 
-        <a-entity id="floor"
-          geometry="primitive: circle"
+        <a-entity id="portalRoomFloor"
+          geometry="primitive: plane"
           rotation="-90 0 0"
-          position="0.0 -2 0.0"
+          position="0.0 -2.5 0.0"
           material="color: #FFF;"
-          scale="13 13 1"
-          shadow="receive: true">
+          scale="100 100 1">
         </a-entity>
 
-        <a-entity id="DoorOne"
-          gltf-model="models/DoorTest2.gltf"
-          shadow="cast: true"
-          scale="0.25 0.25 0.25"
-          rotation="0 135.0 0"
-          position="-7.586 -2.107 -2.157">
-        </a-entity>
-        <a-entity text="value: ENGAGEMENT; align: center;" position="-7.109 2.378 -1.707" scale="8 8 1" rotation="0 45 0"></a-entity>
-
-        <a-entity id="DoorTwo"
-          gltf-model="models/DoorTest2.gltf"
-          shadow="cast: true"
-          scale="0.25 0.25 0.25"
-          rotation="0 90 0"
-          position="0 -2.107 -6">
-          <a-entity text="value: Persistence;"></a-entity>
-        </a-entity>
-        <a-entity id="WorldSphereTwo"
-          geometry="primitive: sphere;
-            thetaLength: 90;"
-          position="0 0 -6.264"
-          rotation="90 180 0"
-          scale="5 5 5"
-          material="color: #888;
-            src: images/room1360.jpg;
+        <a-sphere id="portalOne"
+          radius="2.99"
+          position="-6 0 -6"
+          rotation="0 180 0"
+          phi-length="180"
+          material="color: #ffffff;
             side: back;
-            repeat: 1 0.5;
-            offset: 0 -0.75;">
-        </a-entity>
-        <a-entity id="PortalMaskTwo"
-          geometry="primitive: ring;"
-          position="0 0 -6.223"
-          rotation="0 0 0"
-          scale="4.213 4.213 1"
-          material="
-            color: #FFF;
-            side: back;">
-        </a-entity>
+            transparent: true;
+            src: #portalonepicture;
+            repeat: 0.5 1;
+            offset: 0.25 1;">
+          <a-sphere id="portalOneOuterSphere"
+          visible="true"
+            radius="3"
+            position="0 0 0"
+            rotation="0 0 0"
+            phi-length="180"
+            material="color: #fc9803;
+              side: front;
+              src: #colorgrid;"
+            cloak>
+          </a-sphere>
+          <a-entity id="portalOneOrangeLight"
+            position="0 0 2"
+              light="type: point;
+                intensity: 0.25;
+                color: #fc9803;
+                distance: 2;
+                decay: 10;">
+          </a-entity>
+          <a-entity id="portalOneLight"
+            position="0 -3 -4.5"
+            rotation="160 0 0"
+              light="type: spot;
+                intensity: 1.3;
+                color: #ffffff;
+                distance: 1;
+                decay: 10;
+                angle: 27.2">
+          </a-entity>
+          <a-ring id="portalOneRing"
+            visible="true"
+            radius-outer="3.1"
+            radius-inner="1.5"
+            position="0 0 0"
+            rotation="0 180 0"
+            scale="1 1 1"
+            segments-theta="64"
+            material="color: #ff9500;
+              side: front;
+              src: #colorgrid;"
+            cloak>
+          </a-circle>
+        </a-sphere>
 
+        <a-sphere id="portalTwo"
+          radius="2.99"
+          position="0 0 -6"
+          rotation="0 180 0"
+          phi-Length="180"
+          material="color: #ffffff;
+            side: back;
+            transparent: true;
+            src: #portaltwopicture;
+            repeat: 0.5 1;
+            offset: 0.25 1;">
+          <a-sphere id="portalTwoOuterSphere"
+            visible="true"
+            radius="3"
+            position="0 0 0"
+            rotation="0 0 0"
+            phi-Length="180"
+            material="color: #2df026;
+              side: front;
+              src: #colorgrid;"
+              cloak>
+          </a-sphere>
+          <a-entity id="portalTwoGreenLight"
+            position="0 0 3"
+              light="type: point;
+                intensity: 0.25;
+                color: #2df026;
+                distance: 2;
+                decay: 10;">
+          </a-entity>
+          <a-entity id="portalTwoLight"
+            position="0 -3 -4.5"
+            rotation="160 0 0"
+              light="type: spot;
+                intensity: 1.3;
+                color: #ffffff;
+                distance: 1;
+                decay: 10;
+                angle: 27.2">
+          </a-entity>
+          <a-ring id="portalTwoRing"
+            visible="true"
+            radius-outer="3.1"
+            radius-inner="1.5"
+            position="0 0 0"
+            rotation="0 180 0"
+            scale="1 1 1"
+            segments-theta="64"
+            cloak
+            material="color: #2df026;
+              side: front;
+              src: #colorgrid;
+              repeat: 1 1;
+              offset: 0 0;">
+          </a-circle>
+        </a-sphere>
 
-        <a-entity id="DoorThree"
-          gltf-model="models/DoorTest2.gltf"
-          shadow="cast: true"
-          scale="0.25 0.25 0.25"
-          rotation="0 45 0"
-          position="7.586 -2.107 -2.157">
-          <a-entity text="value: Retention;"></a-entity>
-        </a-entity>
+        <a-sphere id="portalThree"
+          radius="2.99"
+          position="6 0 -6"
+          rotation="0 180 0"
+          phi-length="180"
+          material="color: #ffffff;
+            side: back;
+            transparent: true;
+            src: #portalthreepicture;
+            repeat: 0.5 1;
+            offset: 0.25 0;">
+          <a-sphere id="portalThreeOuterSphere"
+            visible="true"
+            radius="3"
+            position="0 0 0"
+            rotation="0 0 0"
+            phi-length="180"
+            material="color: #309bff;
+              side: front;
+              src: #colorgrid;"
+            cloak>
+          </a-sphere>
+          <a-entity id="portalThreeBlueLight"
+            position="0 0 3"
+              light="type: point;
+                intensity: 0.25;
+                color: #309bff;
+                distance: 2;
+                decay: 10;">
+          </a-entity>
+          <a-entity id="portalThreeLight"
+            position="0 -3 -4.5"
+            rotation="160 0 0"
+              light="type: spot;
+                intensity: 1.3;
+                color: #ffffff;
+                distance: 1;
+                decay: 10;
+                angle: 27.2">
+          </a-entity>
+          <a-ring id="portalThreeRing"
+            visible="true"
+            radius-outer="3.1"
+            radius-inner="1.5"
+            position="0 0 0"
+            rotation="0 180 0"
+            scale="1 1 1"
+            segments-theta="64"
+            material="color: #309bff;
+              side: front;
+              src: #colorgrid;"
+            cloak>
+          </a-circle>
+        </a-sphere>
 
-        <a-entity id="DirectionalLight"
+        <!-- <a-entity id="DirectionalLight"
           light="castShadow: true;
             type: directional;
             shadowCameraBottom: -9;
@@ -185,7 +310,7 @@
             shadowMapWidth: 1024;"
           position="0 12 12"
           intensity="0.5">
-        </a-entity>
+        </a-entity> -->
 
       </a-entity data-description="Closure for portalRoom">
 
@@ -194,7 +319,8 @@
           <a-entity
             id="camera"
             camera="active: true"
-            look-controls position="0 0 0">
+            look-controls
+            position="0 0 0">
 
               <a-entity
                   id="mainCursor"
