@@ -187,7 +187,6 @@ AFRAME.registerComponent('recenter', {
 
 AFRAME.registerComponent('cloak', {
     init: function () {
-        console.log(this.el.object3D.children);
         let arrayLength = this.el.object3D.children.length;
         for( let arrayPointer = 0; arrayPointer < arrayLength; arrayPointer++ ) {
             if( this.el.object3D.children[arrayPointer].material !== undefined ) {

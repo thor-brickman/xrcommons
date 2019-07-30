@@ -153,8 +153,6 @@ document.addEventListener("keydown", event => {
 });
 
 document.getElementById("picturesphere").addEventListener( "animationcomplete__expand", function() {
-    let skySphere = document.getElementById("skySphere");
-    skySphere.parentNode.removeChild(skySphere);
     this.emit('startshrink');
 }, false );
 
@@ -163,7 +161,7 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__s
     console.log("Shrink finished...sliding in classroom...");
     let openingScene = document.getElementById("openingScenePivot");
     openingScene.parentNode.removeChild(openingScene);
-    document.getElementById("ambientlight").setAttribute("light", "intensity", 0);
+    document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
     document.getElementById("portalRoom").setAttribute("visible","true");
 }, false );
 
