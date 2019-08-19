@@ -14,7 +14,6 @@ let activityLog = {};
 let targetCounts = {};
 let gazeX = [];
 let gazeY = [];
-let trackingCursor = false;
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -64,13 +63,6 @@ AFRAME.registerComponent('cursor-listener', {
                 if (currentMode !== "AR") {
                     recordRaycaster("RaycasterIntersected",this.id);
                     targetObject = this.id;
-                    if( trackingCursor ) {
-                        if( this.id === "student1standing" ) {
-                            document.getElementById("student1hilite").setAttribute("visible","true");
-                        } else if( this.id === "student2standing" ) {
-                            document.getElementById("student2hilite").setAttribute("visible","true");
-                        }
-                    }
                 }
         },true);
 
@@ -78,13 +70,6 @@ AFRAME.registerComponent('cursor-listener', {
                 if (currentMode !== "AR") {
                     recordRaycaster("RaycasterCleared",this.id);
                     targetObject = undefined;
-                    if( trackingCursor ) {
-                        if( this.id === "student1standing" ) {
-                            document.getElementById("student1hilite").setAttribute("visible","false");
-                        } else if( this.id === "student2standing" ) {
-                            document.getElementById("student2hilite").setAttribute("visible","false");
-                        }
-                    }
                 }
         },true);
 
@@ -113,7 +98,8 @@ AFRAME.registerComponent('cursor-listener', {
  */
 AFRAME.registerComponent('recenter', {
     schema: {
-      target: {default: ''}
+      target: {type: 'string', default: ''},
+      trigger: {type: 'string', default: 'startup'}
     },
   
     init: function () {
@@ -129,11 +115,13 @@ AFRAME.registerComponent('recenter', {
       this.target = document.querySelector(this.data.target);
   
       // Delay to make sure we have a valid pose.
-      sceneEl.addEventListener('enter-vr', () => setTimeout(this.recenter, 100));
+      if( this.data.trigger === "startup" ) {
+        sceneEl.addEventListener('enter-vr', () => setTimeout(this.recenter, 100));
+        window.addEventListener('vrdisplaypresentchange', this.recenter);
+      }
       // User can also recenter the menu manually.
-      sceneEl.addEventListener('menudown', this.recenter);
-      sceneEl.addEventListener('thumbstickdown', this.recenter);
-      window.addEventListener('vrdisplaypresentchange', this.recenter);
+    //   sceneEl.addEventListener('menudown', this.recenter);
+    //   sceneEl.addEventListener('thumbstickdown', this.recenter);
     },
   
     recenter: function () {
@@ -171,7 +159,10 @@ AFRAME.registerComponent('recenter', {
   
         if (frustum.containsPoint(startingTarget) ||
             frustum.containsPoint(bottomVec3) ||
-            frustum.containsPoint(topVec3)) { return; }
+            frustum.containsPoint(topVec3)) {
+                console.log( "Successfully centered scene." );
+                return;
+            }
   
         this.rotationOffset = this.rotationOffset === 0 ? Math.PI : 0;
         // Recenter again with the new offset.

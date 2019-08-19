@@ -3,12 +3,12 @@
 // Grab the current gaze direction 10 times a second.
 function recordHMD() {
     if( currentMode !== "AR" ) {
-        let d = new Date();
-        let rightNow = d.getTime();
         let mainCamera = document.getElementById("camera");
         let HMDposition = mainCamera.getAttribute("position");
         let HMDrotation = mainCamera.getAttribute("rotation");
         let logObject = {};
+        let d = new Date();
+        let rightNow = d.getTime();
         logObject.timeStamp = rightNow;
         logObject.type = "HMD";
         logObject.position = HMDposition;
@@ -24,23 +24,6 @@ function recordHMD() {
         gazeX.push(-HMDrotation.y);
         gazeY.push(HMDrotation.x)
         activityLog[rightNow] = logObject;
-        if( trackingCursor ) {
-            const sceneEL = document.getElementById("mainScene");
-            const newEntityEL = document.createElement('a-entity');
-
-            newEntityEL.setAttribute('geometry',"primitive: ring; radiusInner: 0.02; radiusOuter: 0.03");
-            newEntityEL.setAttribute('material',"color: #8F8; shader: flat; transparent: true; opacity: 0.5;");
-            let cursorEL = document.getElementById("mainCursor");
-            cursorEL.object3D.getWorldPosition(newEntityEL.object3D.position);
-            cursorEL.object3D.getWorldQuaternion(newEntityEL.object3D.quaternion);
-            newEntityEL.setAttribute('animation__fadeaway', "property: scale; easing: linear; loop: false; dur: 4000; from: 1 1 1; to: 0 0 0");
-
-            newEntityEL.addEventListener( "animationcomplete__fadeaway", function() {
-                this.parentNode.removeChild(this);
-            }, false );
-
-            sceneEL.appendChild(newEntityEL);
-        }
     }
 }
 
@@ -127,6 +110,7 @@ window.addEventListener('touchstart', function () {
             console.log("hmdReady");
             hmdReady = true;
             document.getElementById("openingScenePivot").center;
+            document.getElementById("openingScenePivot").setAttribute("visible","true");
             document.getElementById('arScreen').setAttribute("visible","false");
             document.getElementById('cameraFeed').pause();
             document.getElementById('mainCursor').setAttribute('visible',"true");
@@ -153,16 +137,28 @@ document.addEventListener("keydown", event => {
 });
 
 document.getElementById("picturesphere").addEventListener( "animationcomplete__expand", function() {
-    this.emit('startshrink');
+    // this.emit('startshrink');
+    console.log("Expanded, starting fade...");
+    document.getElementById("ambientlight").emit("startfadeout");
+    document.getElementById("directionallight").emit("startfadeout");
 }, false );
 
 // PictureSphere animation listeners
-document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
-    console.log("Shrink finished...sliding in classroom...");
+// document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
+//     console.log("Shrink finished...sliding in classroom...");
+//     let openingScene = document.getElementById("openingScenePivot");
+//     openingScene.parentNode.removeChild(openingScene);
+//     document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
+//     document.getElementById("portalRoom").setAttribute("visible","true");
+// }, false );
+
+document.getElementById("ambientlight").addEventListener( "animationcomplete__fadeout", function() {
+    console.log("Fade Out complete...");
     let openingScene = document.getElementById("openingScenePivot");
     openingScene.parentNode.removeChild(openingScene);
-    document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
+    // document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
     document.getElementById("portalRoom").setAttribute("visible","true");
+    document.getElementById("ambientlight").emit("startfadein");
 }, false );
 
 // We need ammo to handle browser and OS idiosyncracies...sheesh...
