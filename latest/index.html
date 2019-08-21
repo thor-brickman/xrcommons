@@ -70,6 +70,8 @@
           <source src="audio/silence.ogg" type="audio/ogg">
           <source src="audio/silence.mp3" type="audio/mpeg">
         </audio>
+
+        <a-asset-item id="officechair" src="models/officechair/scene.gltf"></a-asset-item>
       </a-assets>
 
       <a-sky color="black"></a-sky>
@@ -78,7 +80,7 @@
       <a-entity id="ambientlight"
         light="type: ambient; color: #FFFFFF; intensity: 1"
         animation__fadeout="property: light.intensity; startEvents: startfadeout; to: 0.0; dur: 2000; easing: linear;"
-        animation__turniton="property: light.intensity; startEvents: startfadein; from: 0.0; to: 0.75; dur: 2000; easing: linear;">
+        animation__turniton="property: light.intensity; startEvents: startfadein; from: 0.0; to: 0.05; dur: 2000; easing: linear;">
       </a-entity>
 
       <a-entity id="openingScenePivot" recenter="target: #introEarth; trigger: startup;" visible="false">
@@ -126,14 +128,97 @@
       <a-entity id="portalRoom"
         visible="false">
 
+        <a-entity id="softLightFromRight"
+          position="7 4 -2"
+          light="type: directional;
+          intensity: 0.35;
+          color: #ffffff;
+          castShadow: true;
+          shadowMapHeight: 1024;
+          shadowMapWidth: 1024;">
+        </a-entity>
+        <a-entity id="softLightFromLeft"
+          position="-7 4 -2"
+          light="type: directional;
+          intensity: 0.35;
+          color: #ffffff;
+          castShadow: true;
+          shadowMapHeight: 1024;
+          shadowMapWidth: 1024;">
+        </a-entity>
+        <a-entity id="softLightFromBackRight"
+          position="2.5 2.5 2"
+          light="type: directional;
+          intensity: 0.35;
+          color: #ffffff;
+          castShadow: true;
+          shadowMapHeight: 1024;
+          shadowMapWidth: 1024;">
+        </a-entity>
+        <a-entity id="softLightFromAbove"
+          position="0 10 -2"
+          light="type: directional;
+          intensity: 0.35;
+          color: #ffffff;
+          castShadow: true;
+          shadowMapHeight: 1024;
+          shadowMapWidth: 1024;">
+        </a-entity>
+
         <!-- Sky Sphere -->
         <a-sphere id="portalsphere"
-          radius="20"
+          radius="30"
           position="0 0 0"
-          rotation="0 90 0"
-          material="src: images/nordicroom.jpg;
+          rotation="0 180 0"
+          material="src: images/whiteroom.jpg;
             side: double;">
         </a-sphere>
+
+        <a-plane id="room1floor"
+          position="0 -1.6 -1"
+          rotation="-90 0 0"
+          width="15"
+          height="7"
+          material="color: #FFFFFF"
+          shadow="recieve: true;">
+        </a-plane>
+
+        <!-- Some places to sit... -->
+        <a-entity id="chair1"
+          gltf-model="#officechair"
+          position="0 -1.60 0"
+          rotation="0 180 0"
+          scale="0.01 0.01 0.01"
+          shadow="cast: true;">
+        </a-entity>
+        <a-entity id="chair1"
+          gltf-model="#officechair"
+          position="-1 -1.60 0"
+          rotation="0 180 0"
+          scale="0.01 0.01 0.01"
+          shadow="cast: true;">
+        </a-entity>
+        <a-entity id="chair1"
+          gltf-model="#officechair"
+          position="1 -1.60 0"
+          rotation="0 180 0"
+          scale="0.01 0.01 0.01"
+          shadow="cast: true;">
+        </a-entity>
+        <a-entity id="chair1"
+          gltf-model="#officechair"
+          position="-2 -1.60 0"
+          rotation="0 180 0"
+          scale="0.01 0.01 0.01"
+          shadow="cast: true;">
+        </a-entity>
+        <a-entity id="chair1"
+          gltf-model="#officechair"
+          position="2 -1.60 0"
+          rotation="0 180 0"
+          scale="0.01 0.01 0.01"
+          shadow="cast: true;">
+        </a-entity>
 
         <!-- First Portal ( Orange ) -->
         <a-sphere id="portalOne"
@@ -154,10 +239,13 @@
             position="0 0 0"
             rotation="0 0 0"
             phi-length="180"
-            material="color: #fc9803;
+            material="color: #ff9500;
               side: front;
               src: #colorgrid;"
-            cloak>
+            cloak
+            light="type: point;
+              intensity: 0.2;
+              color: #ff9500;">
           </a-sphere>
           <a-ring id="portalOneRing"
             visible="true"
@@ -176,7 +264,7 @@
             visible="true"
             radius-outer="1.7"
             radius-inner="1.5"
-            position="0 0 0.1"
+            position="0 0 0.05"
             rotation="0 180 0"
             scale="1 1 1"
             segments-theta="64"
@@ -184,7 +272,9 @@
               side: front;
               repeat: 1 1;
               offset: 0 0;
-              transparent: true;">
+              transparent: true;
+              emissive: #ff9500;
+              emissiveIntensity: 1;">
           </a-ring>
           <a-ring id="portalOneOuterGlowingRing"
             visible="true"
@@ -200,7 +290,9 @@
               src: images/orangeglow.png;
               offset: 0 0;
               transparent: true;
-              opacity: 0.2;"
+              opacity: 0.2;
+              emissive: #ff9500;
+              emissiveIntensity: 1;"
             animation__glow="property: components.material.material.opacity; from: 0.2; to: 0.7; loop: true; dir: alternate; dur: 1000; easing: linear"
             animation__pulse="property: radius-outer; from: 1.6; to: 1.65; loop: true; dir: alternate; dur: 1000; easing: linear;">
           </a-ring>
@@ -236,7 +328,10 @@
             material="color: #2df026;
               side: front;
               src: #colorgrid;"
-            cloak>
+            cloak
+            light="type: point;
+              intensity: 0.1;
+              color: #2df026;">
           </a-sphere>
           <a-ring id="portalTwoRing"
             visible="true"
@@ -265,7 +360,9 @@
               side: front;
               repeat: 1 1;
               offset: 0 0;
-              transparent: true;">
+              transparent: true;
+              emissive: #2df026;
+              emissiveIntensity: 1;">
           </a-ring>
           <a-ring id="portalTwoOuterGlowingRing"
             visible="true"
@@ -280,8 +377,10 @@
               repeat: 1 1;
               offset: 0 0;
               src: images/greenglow.png;
-              tramsparent: true;
-              opacity: 0.2;"
+              transparent: true;
+              opacity: 0.2;
+              emissive: #2df026;
+              emissiveIntensity: 1;"
             animation__glow="property: components.material.material.opacity; from: 0.2; to: 0.7; loop: true; dir: alternate; dur: 1000; easing: linear"
             animation__pulse="property: radius-outer; from: 1.6; to: 1.65; loop: true; dir: alternate; dur: 1000; easing: linear;">
           </a-ring>
@@ -319,7 +418,7 @@
               src: #colorgrid;"
             cloak
             light="type: point;
-                intensity: 0.25;
+                intensity: 0.35;
                 color: #309bff;">
           </a-sphere>
           <a-ring id="portalThreeRing"
@@ -339,7 +438,7 @@
             visible="true"
             radius-outer="2"
             radius-inner="1.5"
-            position="0 0 0.075"
+            position="0 0 0.05"
             rotation="0 180 0"
             scale="1 1 1"
             segments-theta="64"
@@ -347,7 +446,9 @@
               side: front;
               repeat: 1 1;
               offset: 0 0;
-              transparent: true;">
+              transparent: true;
+              emissive: #309bff;
+              emissiveIntensity: 1;">
           </a-ring>
           <a-ring id="portalThreeOuterGlowingRing"
             visible="true"
@@ -363,7 +464,9 @@
               offset: 0 0;
               src: images/blueglow.png;
               tramsparent: true;
-              opacity: 0.2;"
+              opacity: 0.2;
+              emissive: #309bff;
+              emissiveIntensity: 1;"
             animation__glow="property: components.material.material.opacity; from: 0.2; to: 0.7; loop: true; dir: alternate; dur: 1000; easing: linear"
             animation__pulse="property: radius-outer; from: 1.6; to: 1.65; loop: true; dir: alternate; dur: 1000; easing: linear;">
           </a-ring>
@@ -388,7 +491,7 @@
           radius="20"
           position="0 0 0"
           rotation="0 75 0"
-          material="src: images/notredame.jpg;
+          material="src: #portalonepicture;
             side: double;">
         </a-sphere>
 

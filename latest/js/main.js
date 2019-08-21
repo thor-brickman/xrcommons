@@ -143,22 +143,12 @@ document.getElementById("picturesphere").addEventListener( "animationcomplete__e
     document.getElementById("directionallight").emit("startfadeout");
 }, false );
 
-// PictureSphere animation listeners
-// document.getElementById("picturesphere").addEventListener( "animationcomplete__shrink", function() {
-//     console.log("Shrink finished...sliding in classroom...");
-//     let openingScene = document.getElementById("openingScenePivot");
-//     openingScene.parentNode.removeChild(openingScene);
-//     document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
-//     document.getElementById("portalRoom").setAttribute("visible","true");
-// }, false );
-
 document.getElementById("ambientlight").addEventListener( "animationcomplete__fadeout", function() {
     console.log("Fade Out complete...");
     let openingScene = document.getElementById("openingScenePivot");
     openingScene.parentNode.removeChild(openingScene);
-    // document.getElementById("ambientlight").setAttribute("light", "intensity", 1.0);
     document.getElementById("portalRoom").setAttribute("visible","true");
-    document.getElementById("ambientlight").emit("startfadein");
+    // document.getElementById("ambientlight").emit("startfadein");
 }, false );
 
 // We need ammo to handle browser and OS idiosyncracies...sheesh...
