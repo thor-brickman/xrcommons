@@ -138,7 +138,7 @@
           shadowMapWidth: 1024;">
         </a-entity>
         <a-entity id="softLightFromLeft"
-          position="-7 4 -2"
+          position="-18 9 -5"
           light="type: directional;
           intensity: 0.35;
           color: #ffffff;
@@ -164,6 +164,12 @@
           shadowMapHeight: 1024;
           shadowMapWidth: 1024;">
         </a-entity>
+        <a-entity id="fillLightFromUnderneathFloor"
+          position="0 -2 0"
+          light="type: point;
+            color: #ffffff;
+            intensity: 0.5;">
+        </a-entity>
 
         <!-- Sky Sphere -->
         <a-sphere id="portalsphere"
@@ -175,11 +181,16 @@
         </a-sphere>
 
         <a-plane id="room1floor"
-          position="0 -1.6 -1"
+          position="0 -1.6 -1.5"
           rotation="-90 0 0"
-          width="15"
-          height="7"
-          material="color: #FFFFFF"
+          width="16"
+          height="9"
+          material="color: #ffffff;
+            src: models/tiletexture/tilebasecolor.jpg;
+            normalMap: models/tiletexture/tilenormal.jpg;
+            repeat: 8 4.5;
+            normalTextureRepeat: 8 4.5;
+            normalScale: 0.25 0.25;"
           shadow="recieve: true;">
         </a-plane>
 
@@ -244,7 +255,7 @@
               src: #colorgrid;"
             cloak
             light="type: point;
-              intensity: 0.2;
+              intensity: 0.3;
               color: #ff9500;">
           </a-sphere>
           <a-ring id="portalOneRing"
